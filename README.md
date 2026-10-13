@@ -15,6 +15,12 @@ A multi-category commerce platform for **handmade, festive and building products
 
 Everything brand-specific lives in [`src/config/store.ts`](src/config/store.ts): store name, colours, contact details, announcement bar, homepage festival campaign (with countdown), delivery pincodes, promises, and feature switches (wishlist, reviews, WhatsApp ordering, Telugu names, recently viewed). Offers, gift budgets, testimonials, trust numbers and FAQs are in the same file (the stats and testimonials are samples — replace them with your real ones). Change it and the whole storefront follows — so the same codebase can run a different shop.
 
+## Brand
+
+The Kumbha mark is a kalash (the "kumbha" pot) crowned with a diya flame. It lives in [`src/components/logo.tsx`](src/components/logo.tsx) and follows the brand colours from the store config. Ready-to-use files for print, WhatsApp and social profiles are in `public/brand/` (`kumbha-logo.svg`, `kumbha-mark.svg`, `kumbha-app-icon.svg`); the browser tab icon is `src/app/icon.svg`.
+
+The homepage banner shows every category inside kalash-shaped windows over a soft blur of the same photos (`src/components/hero-collage.tsx`). The festival's category takes the big centre pot; change `campaign` in the store config each season.
+
 ## Storefront features
 
 - **Home:** festival campaign hero with countdown, photo category rail, deals, bestsellers, new arrivals, maker story, recently viewed, WhatsApp offers sign-up

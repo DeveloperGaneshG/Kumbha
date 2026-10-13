@@ -7,6 +7,7 @@ import { CartProvider } from "@/components/cart";
 import { HeaderActions, MobileNav } from "@/components/header-actions";
 import { WhatsAppFloat } from "@/components/whatsapp";
 import { SearchIcon } from "@/components/icons";
+import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = {
   title: { default: `${store.name} — ${store.tagline}`, template: `%s | ${store.name}` },
@@ -48,8 +49,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
           <header className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur">
             <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:gap-6">
-              <Link href="/" className="shrink-0 text-[1.6rem] font-extrabold tracking-tight text-brand">
-                {store.name}
+              <Link href="/" aria-label={`${store.name} home`} className="shrink-0 text-brand">
+                <Logo />
               </Link>
               <form action="/search" role="search" className="relative hidden flex-1 md:block md:max-w-xl">
                 <SearchIcon size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint" />
@@ -95,7 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <footer className="mt-20 border-t border-line bg-surface">
             <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-xl font-extrabold text-brand">{store.name}</p>
+                <Logo size={30} cutColor="#f5f6f8" className="text-brand" />
                 <p className="mt-2 max-w-xs text-sm text-muted">{store.description}</p>
               </div>
               <div>

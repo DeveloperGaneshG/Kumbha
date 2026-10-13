@@ -11,6 +11,8 @@ import type { SellingMode } from "@/lib/selling-modes";
 export type CategoryPreset = {
   slug: string;
   name: string;
+  /** Short label for tight spaces (hero, chips) */
+  shortName: string;
   nameTe: string;
   description: string;
   storefront: "FESTIVE" | "BUILD";
@@ -28,6 +30,7 @@ export type CategoryPreset = {
 export const CATEGORY_PRESETS: CategoryPreset[] = [
   {
     slug: "clay-pots",
+    shortName: "Clay pots",
     name: "Clay Pots & Terracotta",
     nameTe: "మట్టి కుండలు",
     description: "Cooking pots, water matkas, plant pots and terracotta decor — handmade by local potters.",
@@ -69,6 +72,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
   },
   {
     slug: "diwali",
+    shortName: "Diwali",
     name: "Diwali & Festive Decor",
     nameTe: "దీపావళి సామాగ్రి",
     description: "Diyas, lanterns, torans, rangoli and ready puja kits.",
@@ -87,6 +91,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
   },
   {
     slug: "crackers",
+    shortName: "Crackers",
     name: "Bhanasancha (Crackers)",
     nameTe: "బాణాసంచా",
     description: "Green crackers available at our licensed store.",
@@ -114,6 +119,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
   },
   {
     slug: "idols",
+    shortName: "Idols",
     name: "Ganesh & Durga Idols",
     nameTe: "గణేష్ & దుర్గా విగ్రహాలు",
     description: "Eco-friendly clay idols for homes and pandals. Pre-book your size and festival date.",
@@ -147,6 +153,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
   },
   {
     slug: "etikoppaka-toys",
+    shortName: "Etikoppaka",
     name: "Etikoppaka Wooden Toys",
     nameTe: "ఏటికొప్పాక చెక్క బొమ్మలు",
     description: "GI-tagged lacquerware toys from Etikoppaka, coloured with natural dyes. Safe for children.",
@@ -182,6 +189,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
   },
   {
     slug: "construction",
+    shortName: "Bricks",
     name: "Bricks & Construction Materials",
     nameTe: "ఇటుకలు & నిర్మాణ సామగ్రి",
     description: "Red bricks, fly-ash bricks, sand, cement and aggregates delivered to your site.",

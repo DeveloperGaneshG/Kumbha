@@ -75,3 +75,18 @@ h3 {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* Hero: kalash windows rise into place once on load */
+@keyframes kumbha-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.kumbha-rise {
+  animation: kumbha-rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}

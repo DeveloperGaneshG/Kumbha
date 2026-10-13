@@ -15,6 +15,7 @@ import type { DeliveryRate } from "./delivery";
 export type CategoryView = {
   slug: string;
   name: string;
+  shortName: string;
   nameTe: string | null;
   description: string | null;
   image: string | null;
@@ -89,6 +90,7 @@ export function bestDiscount(p: ProductView) {
 const demoCategories: CategoryView[] = CATEGORY_PRESETS.map((c) => ({
   slug: c.slug,
   name: c.name,
+  shortName: c.shortName,
   nameTe: c.nameTe,
   description: c.description,
   image: c.image,
@@ -143,6 +145,7 @@ async function dbCategories(): Promise<CategoryView[]> {
   return rows.map((c) => ({
     slug: c.slug,
     name: c.name,
+    shortName: CATEGORY_PRESETS.find((p) => p.slug === c.slug)?.shortName ?? c.name,
     nameTe: c.nameTe,
     description: c.description,
     image: c.imageUrl,

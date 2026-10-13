@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { allProducts, featuredProducts, fromPrice, listBundles, listCategories, newArrivals, topDeals } from "@/lib/catalog";
 import { daysUntilFestival } from "@/lib/campaign";
+import { HeroCollage, HeroMosaic, type HeroTile } from "@/components/hero-collage";
 import { BundleCard, Faq, OrderByBanner, Testimonials, TrustStats } from "@/components/sections";
 import { store } from "@/config/store";
 import { ProductGrid, ProductRow } from "@/components/product-card";
@@ -28,30 +29,43 @@ export default async function Home() {
   const days = daysUntilFestival();
   const idols = top.find((c) => c.slug === "idols");
   const build = top.find((c) => c.storefront === "BUILD");
+  // Hero: the festival's category takes the big centre pot, every other category joins the cluster
+  const hrefFor = (c: (typeof top)[number]) => (c.storefront === "BUILD" ? "/build" : `/c/${c.slug}`);
+  const festive = top.find((c) => c.slug === campaign.categorySlug);
+  const heroTiles: HeroTile[] = [
+    ...(festive ? [{ href: hrefFor(festive), label: festive.shortName, image: campaign.image, icon: festive.emoji }] : []),
+    ...top.filter((c) => c !== festive).map((c) => ({ href: hrefFor(c), label: c.shortName, image: c.image, icon: c.emoji })),
+  ];
 
   return (
     <>
-      {/* Campaign hero */}
+      {/* Campaign hero: every category in kalash-shaped windows over a blurred mosaic of the same photos */}
       <section className="mx-auto max-w-7xl px-4 pt-5">
         <div className="relative isolate overflow-hidden rounded-2xl bg-ink">
-          <ProductImage src={campaign.image} alt="" fallbackIcon="" width={1600} priority className="absolute inset-0 -z-10 h-full w-full opacity-70" />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-          <div className="max-w-xl px-6 py-14 text-white sm:px-10 md:py-24">
-            {days > 0 && days < 120 && (
-              <p className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-sm font-bold text-ink">
-                {campaign.name} in {days} {days === 1 ? "day" : "days"}
+          <HeroMosaic images={heroTiles.map((t) => t.image)} />
+          <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-ink/70 via-ink/55 to-ink/85 md:bg-gradient-to-r md:from-ink/95 md:via-ink/70 md:to-ink/30" />
+          <div className="grid items-center gap-8 px-6 pb-10 pt-10 sm:px-10 md:grid-cols-[1fr_1.05fr] md:py-14">
+            <div className="text-white">
+              {days > 0 && days < 120 && (
+                <p className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-sm font-bold text-ink">
+                  {campaign.name} in {days} {days === 1 ? "day" : "days"}
+                </p>
+              )}
+              <h1 className="mt-4 text-[2.15rem] font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">{campaign.headline}</h1>
+              <p className="mt-4 max-w-md text-white/85 sm:text-lg">{campaign.subline}</p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link href={`/c/${campaign.categorySlug}`} className={btn.onDark}>
+                  Shop {campaign.name}
+                </Link>
+                <Link href="/quote" className="inline-flex items-center rounded-lg border border-white/50 px-5 py-3 font-semibold text-white hover:bg-white/10">
+                  Bulk & gifting orders
+                </Link>
+              </div>
+              <p className="mt-8 hidden text-sm text-white/70 sm:block">
+                Pots, diyas, idols, Etikoppaka toys and bricks — handmade by {store.stats.find((s) => s.label.includes("artisan"))?.value ?? "local"} artisans.
               </p>
-            )}
-            <h1 className="mt-4 text-4xl font-extrabold leading-[1.05] sm:text-5xl md:text-6xl">{campaign.headline}</h1>
-            <p className="mt-4 max-w-md text-lg text-white/85">{campaign.subline}</p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link href={`/c/${campaign.categorySlug}`} className={btn.onDark}>
-                Shop {campaign.name}
-              </Link>
-              <Link href="/quote" className="inline-flex items-center rounded-lg border border-white/50 px-5 py-3 font-semibold text-white hover:bg-white/10">
-                Bulk & gifting orders
-              </Link>
             </div>
+            <HeroCollage tiles={heroTiles} />
           </div>
         </div>
       </section>
