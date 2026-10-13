@@ -18,8 +18,10 @@ export type CategoryPreset = {
   sellingModes: SellingMode[];
   attributeSchema: AttributeField[];
   rules: CategoryRules;
-  /** Placeholder visual until real photos are uploaded */
+  /** Icon used in compact places (nav, chips) */
   emoji: string;
+  /** Cover photo for category tiles and headers */
+  image: string;
   sortOrder: number;
 };
 
@@ -32,6 +34,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     storefront: "FESTIVE",
     sellingModes: ["SHIP_TO_HOME", "LOCAL_DELIVERY", "PICKUP", "QUOTE"],
     emoji: "🏺",
+    image: "https://images.unsplash.com/photo-1507022787381-b30170b5ebf4",
     sortOrder: 1,
     rules: {
       fragile: true,
@@ -57,6 +60,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     storefront: "FESTIVE",
     sellingModes: ["SHIP_TO_HOME", "LOCAL_DELIVERY", "PICKUP"],
     emoji: "🪔",
+    image: "https://images.unsplash.com/photo-1635192592106-77a5aacbe1a3",
     sortOrder: 2,
     rules: { fragile: true, unit: "set", seasons: ["diwali"], badges: ["Festive pick"] },
     attributeSchema: [
@@ -77,6 +81,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     // Verify current Supreme Court / state rules and your PESO licence before changing this.
     sellingModes: ["CATALOG_ONLY", "PICKUP"],
     emoji: "🎆",
+    image: "https://images.unsplash.com/photo-1513546493312-0066d7de3fd2",
     sortOrder: 3,
     rules: {
       unit: "box",
@@ -100,6 +105,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     storefront: "FESTIVE",
     sellingModes: ["PRE_BOOK", "MADE_TO_ORDER", "PICKUP", "QUOTE"],
     emoji: "🛕",
+    image: "https://images.unsplash.com/photo-1598195596234-e04b82ef8adf",
     sortOrder: 4,
     rules: {
       fragile: true,
@@ -127,6 +133,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     storefront: "FESTIVE",
     sellingModes: ["SHIP_TO_HOME", "MADE_TO_ORDER", "QUOTE"],
     emoji: "🪀",
+    image: "https://images.unsplash.com/photo-1703581698778-2224c729135b",
     sortOrder: 5,
     rules: {
       unit: "piece",
@@ -150,6 +157,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     storefront: "BUILD",
     sellingModes: ["QUOTE", "LOCAL_DELIVERY", "PICKUP"],
     emoji: "🧱",
+    image: "https://images.unsplash.com/photo-1495578942200-c5f5d2137def",
     sortOrder: 6,
     rules: {
       unit: "1000 bricks",

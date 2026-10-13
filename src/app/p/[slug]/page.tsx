@@ -1,11 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProduct } from "@/lib/catalog";
+import { allProducts, fromPrice, getProduct, listCategories, relatedProducts } from "@/lib/catalog";
 import { formatAttributes } from "@/lib/category-template";
+import { store, img } from "@/config/store";
 import { ProductActions } from "@/components/product-actions";
 import { SizeVisualizer } from "@/components/size-visualizer";
 import { WallCalculator } from "@/components/wall-calculator";
+import { Gallery } from "@/components/gallery";
+import { PincodeCheck } from "@/components/pincode-check";
+import { Reviews } from "@/components/reviews";
+import { ProductRow } from "@/components/product-card";
+import { RecentlyViewed, TrackView } from "@/components/recently-viewed";
+import { WishlistButton } from "@/components/wishlist-button";
+import { Breadcrumbs, RatingInline, SectionHeader } from "@/components/ui";
+import { CheckIcon, ShareIcon } from "@/components/icons";
+import { whatsappLink } from "@/components/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -13,54 +23,81 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await getProduct((await params).slug);
-  return p ? { title: p.name, description: p.description ?? undefined } : {};
+  if (!p) return {};
+  return {
+    title: p.name,
+    description: p.description ?? undefined,
+    openGraph: { title: p.name, description: p.description ?? undefined, images: p.images[0] ? [img(p.images[0], 1200)] : undefined },
+  };
 }
 
 export default async function ProductPage({ params }: Props) {
-  const p = await getProduct((await params).slug);
+  const { slug } = await params;
+  const p = await getProduct(slug);
   if (!p) notFound();
   const { category: c } = p;
+  const [cats, related, all] = await Promise.all([listCategories(), relatedProducts(p, 8), allProducts()]);
+  const parent = c.parentSlug ? cats.find((x) => x.slug === c.parentSlug) : null;
   const specs = formatAttributes(c.attributeSchema, p.attributes);
   const heightFt = typeof p.attributes.heightFt === "number" ? p.attributes.heightFt : null;
+  const categoryHref = c.storefront === "BUILD" ? "/build" : `/c/${c.slug}`;
+
+  // Structured data so Google can show price and rating in search results
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.name,
+    description: p.description,
+    image: p.images.map((i) => img(i, 1200)),
+    brand: { "@type": "Brand", name: store.name },
+    ...(p.reviewCount > 0 && { aggregateRating: { "@type": "AggregateRating", ratingValue: p.rating, reviewCount: p.reviewCount } }),
+    offers: { "@type": "AggregateOffer", priceCurrency: "INR", lowPrice: fromPrice(p) / 100, highPrice: Math.max(...p.variants.map((v) => v.price)) / 100 },
+  };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <p className="text-sm text-clay-600">
-        <Link href="/">Home</Link> / <Link href={c.storefront === "BUILD" ? "/build" : `/c/${c.slug}`}>{c.name}</Link> / {p.name}
-      </p>
+    <div className="mx-auto max-w-7xl px-4 py-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <TrackView slug={p.slug} />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          ...(parent ? [{ label: parent.name, href: `/c/${parent.slug}` }] : []),
+          { label: c.name, href: categoryHref },
+          { label: p.name },
+        ]}
+      />
 
-      <div className="mt-6 grid gap-10 md:grid-cols-2">
-        <div className="space-y-4">
-          <div className={`flex aspect-square items-center justify-center rounded-3xl text-[10rem] ${c.storefront === "BUILD" ? "bg-slate-100" : "bg-clay-100"}`}>
-            {p.images[0] ? (
-              // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded URLs from any host
-              <img src={p.images[0]} alt={p.name} className="h-full w-full rounded-3xl object-cover" />
-            ) : (
-              c.emoji
-            )}
-          </div>
+      <div className="mt-5 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
+        <div className="space-y-4 lg:sticky lg:top-32 lg:self-start">
+          <Gallery images={p.images} name={p.name} icon={c.emoji} />
           {c.rules.showSizeVisualizer && heightFt && <SizeVisualizer heightFt={heightFt} emoji={c.emoji} />}
         </div>
 
         <div className="space-y-6">
           <div>
-            <h1 className="text-4xl leading-tight">{p.name}</h1>
-            {p.nameTe && <p className="mt-1 text-xl text-clay-600">{p.nameTe}</p>}
-            <div className="mt-3 flex flex-wrap gap-2">
-              {c.rules.badges?.map((b) => (
-                <span key={b} className="rounded-full bg-leaf/10 px-3 py-1 text-xs text-leaf">
-                  ✓ {b}
-                </span>
-              ))}
-            </div>
-            <p className="mt-4 text-clay-800">{p.description}</p>
+            <Link href={categoryHref} className="text-sm font-semibold text-brand hover:underline">
+              {c.name}
+            </Link>
+            <h1 className="mt-1 text-3xl font-extrabold leading-tight md:text-4xl">{p.name}</h1>
+            {store.features.showTeluguNames && p.nameTe && <p className="mt-1 font-[family-name:var(--font-telugu)] text-lg text-muted">{p.nameTe}</p>}
+            {p.reviewCount > 0 && (
+              <a href="#reviews" className="mt-3 inline-block hover:underline">
+                <RatingInline rating={p.rating} count={p.reviewCount} />
+              </a>
+            )}
           </div>
 
-          {c.rules.legalNotice && <div className="rounded-xl border border-turmeric bg-turmeric/10 p-4 text-sm">⚠️ {c.rules.legalNotice}</div>}
+          {c.rules.legalNotice && (
+            <p role="note" className="rounded-xl border border-accent/60 bg-accent/10 p-4 text-sm">
+              <strong>Please note:</strong> {c.rules.legalNotice}
+            </p>
+          )}
 
           <ProductActions
             slug={p.slug}
             name={p.name}
+            image={p.images[0]}
+            icon={c.emoji}
             unit={p.unit}
             gstRate={p.gstRate}
             modes={p.sellingModes}
@@ -69,37 +106,105 @@ export default async function ProductPage({ params }: Props) {
             variants={p.variants}
           />
 
-          {specs.length > 0 && (
+          <div className="flex gap-2">
+            {store.features.wishlist && <WishlistButton slug={p.slug} name={p.name} variant="button" />}
+            <a
+              href={whatsappLink(`Look at this: ${p.name}`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-line px-4 py-3 font-semibold hover:border-ink"
+            >
+              <ShareIcon size={18} /> Share
+            </a>
+          </div>
+
+          {p.sellingModes.some((m) => m !== "CATALOG_ONLY") && <PincodeCheck modes={p.sellingModes} fragile={c.rules.fragile} />}
+
+          {p.highlights.length > 0 && (
             <div>
-              <h2 className="text-xl">Details</h2>
-              <dl className="mt-3 divide-y divide-clay-200 rounded-xl border border-clay-200 bg-white">
-                {specs.map((s) => (
-                  <div key={s.key} className="flex justify-between gap-4 px-4 py-2.5 text-sm">
-                    <dt className="text-clay-600">{s.label}</dt>
-                    <dd className="text-right font-medium">{s.value}</dd>
-                  </div>
+              <h2 className="font-semibold">Highlights</h2>
+              <ul className="mt-2 space-y-2">
+                {p.highlights.map((h) => (
+                  <li key={h} className="flex gap-2.5 text-[15px]">
+                    <CheckIcon size={18} className="mt-0.5 shrink-0 text-brand" />
+                    {h}
+                  </li>
                 ))}
-              </dl>
+              </ul>
             </div>
           )}
 
-          {p.artisan && (
-            <div className="rounded-2xl bg-clay-100 p-5">
-              <p className="text-xs uppercase tracking-wide text-clay-600">Meet the maker</p>
-              <p className="mt-1 text-lg font-semibold">
-                {p.artisan.name}
-                {p.artisan.village && <span className="font-normal text-clay-600"> · {p.artisan.village}</span>}
-              </p>
-              <p className="mt-1 text-sm text-clay-800">{p.artisan.story}</p>
-            </div>
+          {c.rules.badges && (
+            <ul className="flex flex-wrap gap-2">
+              {c.rules.badges.map((b) => (
+                <li key={b} className="rounded-full bg-brand-soft px-3 py-1 text-sm font-medium text-brand">
+                  {b}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </div>
 
+      {/* Details */}
+      <section className="mt-16 grid gap-10 border-t border-line pt-10 lg:grid-cols-2">
+        <div>
+          <h2 className="text-2xl font-bold">About this product</h2>
+          <p className="mt-3 max-w-prose leading-relaxed text-muted">{p.description}</p>
+          {p.artisan && (
+            <div className="mt-8 rounded-2xl bg-brand-soft p-6">
+              <p className="text-sm font-semibold text-brand">Made by</p>
+              <p className="mt-1 text-xl font-bold">
+                {p.artisan.name}
+                {p.artisan.village && <span className="font-medium text-muted">, {p.artisan.village}</span>}
+              </p>
+              <p className="mt-2 max-w-prose text-[15px]">{p.artisan.story}</p>
+            </div>
+          )}
+        </div>
+        {specs.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold">Specifications</h2>
+            <dl className="mt-4 divide-y divide-line border-y border-line">
+              {specs.map((s) => (
+                <div key={s.key} className="grid grid-cols-[40%_1fr] gap-4 py-3 text-[15px]">
+                  <dt className="text-muted">{s.label}</dt>
+                  <dd className="font-medium">{s.value}</dd>
+                </div>
+              ))}
+              {p.unit !== "piece" && (
+                <div className="grid grid-cols-[40%_1fr] gap-4 py-3 text-[15px]">
+                  <dt className="text-muted">Sold per</dt>
+                  <dd className="font-medium">{p.unit}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        )}
+      </section>
+
       {c.rules.showCalculator && (
-        <section className="mt-14">
+        <section className="mt-16">
           <WallCalculator />
         </section>
+      )}
+
+      {store.features.reviews && (
+        <section id="reviews" className="mt-16 scroll-mt-32 border-t border-line pt-10">
+          <h2 className="mb-6 text-2xl font-bold">Customer reviews</h2>
+          <Reviews rating={p.rating} count={p.reviewCount} reviews={p.reviews} />
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section className="mt-16">
+          <SectionHeader title="You may also like" href={categoryHref} />
+          <ProductRow products={related.slice(0, 4)} />
+        </section>
+      )}
+
+      {store.features.recentlyViewed && (
+        <RecentlyViewed exclude={p.slug} catalog={all.map((x) => ({ slug: x.slug, name: x.name, image: x.images[0] ?? null, price: fromPrice(x), icon: x.category.emoji }))} />
       )}
     </div>
   );

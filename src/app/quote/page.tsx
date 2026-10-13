@@ -18,8 +18,8 @@ export default async function QuotePage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-4xl">Request a quote</h1>
-      <p className="mt-2 text-clay-700">
+      <h1 className="text-3xl font-bold">Request a quote</h1>
+      <p className="mt-2 text-muted">
         Bulk pots for your nursery, a pandal idol, return gifts for 200 guests or bricks for your site — tell us what you need and we&apos;ll reply on
         WhatsApp within a few hours.
       </p>

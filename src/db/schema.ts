@@ -96,6 +96,12 @@ export const products = pgTable(
     /** Empty = inherit all of the category's selling modes */
     sellingModes: sellingMode("selling_modes").array().default([]).notNull(),
     images: text("images").array().default([]).notNull(),
+    /** Short bullet points shown near the buy box */
+    highlights: text("highlights").array().default([]).notNull(),
+    /** Denormalised from reviews for fast listing/sorting */
+    ratingAvg: doublePrecision("rating_avg").default(0).notNull(),
+    ratingCount: integer("rating_count").default(0).notNull(),
+    isNew: boolean("is_new").default(false).notNull(),
     /** All money is stored in paise */
     basePrice: integer("base_price").notNull(),
     unit: text("unit").default("piece").notNull(),
@@ -119,6 +125,8 @@ export const productVariants = pgTable("product_variants", {
   name: text("name").notNull(),
   options: jsonb("options").$type<Record<string, string>>().default({}).notNull(),
   price: integer("price").notNull(),
+  /** Compare-at price (MRP) for "% off" — optional */
+  mrp: integer("mrp"),
   stock: integer("stock").default(0).notNull(),
   /** PRE_BOOK / MADE_TO_ORDER: units we can produce this season */
   capacity: integer("capacity"),
@@ -136,6 +144,27 @@ export const priceTiers = pgTable(
     unitPrice: integer("unit_price").notNull(),
   },
   (t) => [uniqueIndex("price_tiers_product_qty").on(t.productId, t.minQty)],
+);
+
+export const reviews = pgTable(
+  "reviews",
+  {
+    id: id(),
+    productId: text("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    customerId: text("customer_id"),
+    name: text("name").notNull(),
+    city: text("city"),
+    rating: integer("rating").notNull(),
+    title: text("title"),
+    body: text("body"),
+    photos: text("photos").array().default([]).notNull(),
+    verified: boolean("verified").default(false).notNull(),
+    isPublished: boolean("is_published").default(true).notNull(),
+    createdAt: timestamps.createdAt,
+  },
+  (t) => [index("reviews_product_idx").on(t.productId)],
 );
 
 // ── Seasons & campaigns ─────────────────────────────────────────────────────
@@ -288,6 +317,11 @@ export const productsRelations = relations(products, ({ one, many }) => ({
   artisan: one(artisans, { fields: [products.artisanId], references: [artisans.id] }),
   variants: many(productVariants),
   priceTiers: many(priceTiers),
+  reviews: many(reviews),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  product: one(products, { fields: [reviews.productId], references: [products.id] }),
 }));
 
 export const variantsRelations = relations(productVariants, ({ one }) => ({

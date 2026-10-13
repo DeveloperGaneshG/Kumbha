@@ -11,6 +11,21 @@ A multi-category commerce platform for **handmade, festive and building products
 | 🪀 Etikoppaka wooden toys | Ship to home · personalised · return-gift bulk quotes |
 | 🧱 Bricks & construction | Quote with distance-based delivery · material calculator |
 
+## Rebrand it in one file
+
+Everything brand-specific lives in [`src/config/store.ts`](src/config/store.ts): store name, colours, contact details, announcement bar, homepage festival campaign (with countdown), delivery pincodes, promises, and feature switches (wishlist, reviews, WhatsApp ordering, Telugu names, recently viewed). Change it and the whole storefront follows — so the same codebase can run a different shop.
+
+## Storefront features
+
+- **Home:** festival campaign hero with countdown, photo category rail, deals, bestsellers, new arrivals, maker story, recently viewed, WhatsApp offers sign-up
+- **Category:** filters generated from the category template, price bands, sort (popular, top rated, newest, price), mobile filter drawer
+- **Product:** photo gallery, price with MRP and % off, option picker, quantity stepper, buy box that adapts to the selling mode, bulk price tiers, pincode delivery check, wishlist, WhatsApp share, highlights, specifications, maker profile, ratings summary and reviews, related products, Google rich-result structured data
+- **Wishlist & recently viewed** (saved in the browser), **cart** grouped by selling mode with free-delivery progress and advance-payment split
+- **Mobile:** app-style bottom navigation, horizontally scrolling rows, sticky header with search
+- Accessible: skip link, visible focus, labelled controls, reduced-motion support
+
+Sample photos are free Unsplash images standing in for real product photography — replace the URLs in `src/catalog/` before launch. Missing or broken photos fall back to a neutral tile.
+
 ## The core idea
 
 Categories are **data, not code**. Each category is defined by three things:
@@ -69,7 +84,10 @@ src/
     build/                construction storefront + calculator
     quote/                multi-item quote request (any QUOTE-enabled product)
     cart/                 cart grouped by selling mode
+    wishlist/, categories/, search/
     api/quotes, api/catalog
+  config/
+    store.ts              ← brand, colours, contact, campaign, feature switches
   catalog/
     presets.ts            ← category definitions (edit here to add categories)
     demo-products.ts      demo catalog + delivery rates

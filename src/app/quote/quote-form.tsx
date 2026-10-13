@@ -13,7 +13,7 @@ type Estimate = {
   total: number;
 };
 
-const input = "w-full rounded-lg border border-clay-200 bg-white px-3 py-2";
+const input = "w-full rounded-lg border border-line bg-white px-3 py-2";
 
 export function QuoteForm({ products, initialProduct, initialQty }: { products: ProductOption[]; initialProduct?: string; initialQty?: number }) {
   const [lines, setLines] = useState<Line[]>([
@@ -67,20 +67,20 @@ export function QuoteForm({ products, initialProduct, initialQty }: { products: 
   if (status === "done" && result) {
     const { estimate } = result;
     return (
-      <div className="mt-8 space-y-4 rounded-2xl border border-leaf/40 bg-white p-6">
-        <p className="text-xl font-semibold text-leaf">✓ Request received</p>
+      <div className="mt-8 space-y-4 rounded-2xl border border-success/40 bg-white p-6">
+        <p className="text-xl font-semibold text-success">✓ Request received</p>
         <table className="w-full text-sm">
           <tbody>
             {estimate.lines.map((l) => (
-              <tr key={l.name} className="border-b border-clay-100">
+              <tr key={l.name} className="border-b border-line">
                 <td className="py-2">
-                  {l.name} <span className="text-clay-600">· {l.quantity} × {l.unit}</span>
+                  {l.name} <span className="text-muted">· {l.quantity} × {l.unit}</span>
                 </td>
                 <td className="py-2 text-right">{formatINR(l.amount)}</td>
               </tr>
             ))}
             {estimate.delivery && (
-              <tr className="border-b border-clay-100">
+              <tr className="border-b border-line">
                 <td className="py-2">
                   Delivery · {estimate.delivery.km} km · {estimate.delivery.trips} × {estimate.delivery.vehicle}
                 </td>
@@ -93,10 +93,10 @@ export function QuoteForm({ products, initialProduct, initialQty }: { products: 
             </tr>
           </tbody>
         </table>
-        <p className="text-sm text-clay-600">
+        <p className="text-sm text-muted">
           {estimate.delivery ? "" : "Delivery is added once we confirm your site location. "}Final price is confirmed by our team — rates change daily.
         </p>
-        <a href={whatsappLink(result.summary)} target="_blank" rel="noopener noreferrer" className="inline-block rounded-full bg-[#25d366] px-5 py-2.5 font-semibold text-white">
+        <a href={whatsappLink(result.summary)} target="_blank" rel="noopener noreferrer" className="inline-block rounded-full bg-[#1fae53] px-5 py-2.5 font-semibold text-white">
           Send to us on WhatsApp for a faster reply
         </a>
       </div>
@@ -105,7 +105,7 @@ export function QuoteForm({ products, initialProduct, initialQty }: { products: 
 
   return (
     <form onSubmit={submit} className="mt-8 space-y-6">
-      <fieldset className="space-y-3 rounded-2xl border border-clay-200 bg-white p-5">
+      <fieldset className="space-y-3 rounded-2xl border border-line p-5">
         <legend className="px-2 font-semibold">What do you need?</legend>
         {lines.map((l, i) => (
           <div key={i} className="flex gap-2">
@@ -136,40 +136,40 @@ export function QuoteForm({ products, initialProduct, initialQty }: { products: 
               aria-label="Quantity"
             />
             {lines.length > 1 && (
-              <button type="button" onClick={() => setLines(lines.filter((_, j) => j !== i))} className="px-2 text-clay-600" aria-label="Remove">
+              <button type="button" onClick={() => setLines(lines.filter((_, j) => j !== i))} className="px-2 text-muted" aria-label="Remove">
                 ✕
               </button>
             )}
           </div>
         ))}
-        <button type="button" onClick={() => setLines([...lines, { productSlug: products[0]?.slug ?? "", quantity: 1 }])} className="text-sm font-semibold text-clay-600">
+        <button type="button" onClick={() => setLines([...lines, { productSlug: products[0]?.slug ?? "", quantity: 1 }])} className="text-sm font-semibold text-muted">
           + Add another item
         </button>
       </fieldset>
 
-      <fieldset className="grid gap-4 rounded-2xl border border-clay-200 bg-white p-5 sm:grid-cols-2">
+      <fieldset className="grid gap-4 rounded-2xl border border-line p-5 sm:grid-cols-2">
         <legend className="px-2 font-semibold">Your details</legend>
         <input name="name" required placeholder="Name" className={input} />
         <input name="phone" required inputMode="tel" placeholder="WhatsApp number" className={input} />
         <input name="gstin" placeholder="GSTIN (optional, for business invoice)" className={`${input} sm:col-span-2`} />
       </fieldset>
 
-      <fieldset className="grid gap-4 rounded-2xl border border-clay-200 bg-white p-5 sm:grid-cols-2">
+      <fieldset className="grid gap-4 rounded-2xl border border-line p-5 sm:grid-cols-2">
         <legend className="px-2 font-semibold">Delivery / site</legend>
         <textarea name="siteAddress" required placeholder="Site address / landmark" className={`${input} sm:col-span-2`} rows={2} />
         <input name="pincode" required inputMode="numeric" placeholder="Pincode" className={input} />
         <label className="text-sm">
-          <span className="block text-clay-600">Needed by</span>
+          <span className="block text-muted">Needed by</span>
           <input name="neededBy" type="date" className={input} />
         </label>
-        <button type="button" onClick={locate} className="rounded-lg border border-clay-300 px-3 py-2 text-sm sm:col-span-2">
+        <button type="button" onClick={locate} className="rounded-lg border border-line px-3 py-2 text-sm sm:col-span-2">
           {coords ? `📍 Location added (${coords.lat.toFixed(3)}, ${coords.lng.toFixed(3)})` : "📍 Use my current location for delivery estimate"}
         </button>
         <textarea name="notes" placeholder="Anything else? (custom size, colour, unloading help…)" className={`${input} sm:col-span-2`} rows={2} />
       </fieldset>
 
-      {error && <p className="rounded-lg bg-kumkum/10 p-3 text-sm text-kumkum">{error}</p>}
-      <button disabled={status === "sending"} className="w-full rounded-full bg-clay-600 py-3 font-semibold text-white disabled:opacity-50">
+      {error && <p className="rounded-lg bg-sale/10 p-3 text-sm text-sale">{error}</p>}
+      <button disabled={status === "sending"} className="w-full rounded-lg bg-brand py-3.5 font-semibold text-white disabled:opacity-50">
         {status === "sending" ? "Sending…" : "Get my quote"}
       </button>
     </form>

@@ -5,7 +5,7 @@
 import "dotenv/config";
 import { eq } from "drizzle-orm";
 import { db } from "./index";
-import { artisans, categories, deliveryRates, priceTiers, products, productVariants } from "./schema";
+import { artisans, categories, deliveryRates, priceTiers, products, productVariants, reviews } from "./schema";
 import { CATEGORY_PRESETS } from "@/catalog/presets";
 import { DEMO_PRODUCTS, DEMO_DELIVERY_RATES } from "@/catalog/demo-products";
 import { buildAttributeValidator } from "@/lib/category-template";
@@ -21,6 +21,7 @@ async function main() {
       name: c.name,
       nameTe: c.nameTe,
       description: c.description,
+      imageUrl: c.image,
       storefront: c.storefront,
       parentId: c.parentSlug ? categoryIds.get(c.parentSlug) : null,
       attributeSchema: c.attributeSchema,
@@ -56,6 +57,11 @@ async function main() {
       categoryId: categoryIds.get(p.categorySlug)!,
       attributes,
       sellingModes: p.sellingModes ?? [],
+      images: p.images,
+      highlights: p.highlights ?? [],
+      ratingAvg: p.rating ?? 0,
+      ratingCount: p.reviewCount ?? 0,
+      isNew: Boolean(p.isNew),
       basePrice: p.basePrice,
       unit: p.unit ?? preset.rules.unit ?? "piece",
       gstRate: p.gstRate,
@@ -72,6 +78,9 @@ async function main() {
       const vv = { ...v, productId: prod.id };
       await db.insert(productVariants).values(vv).onConflictDoUpdate({ target: productVariants.sku, set: vv });
     }
+    await db.delete(reviews).where(eq(reviews.productId, prod.id));
+    if (p.reviews?.length)
+      await db.insert(reviews).values(p.reviews.map(({ date, ...r }) => ({ ...r, productId: prod.id, createdAt: new Date(date) })));
     await db.delete(priceTiers).where(eq(priceTiers.productId, prod.id));
     if (p.priceTiers?.length) await db.insert(priceTiers).values(p.priceTiers.map((t) => ({ ...t, productId: prod.id })));
   }

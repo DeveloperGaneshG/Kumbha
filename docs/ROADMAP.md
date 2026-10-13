@@ -10,6 +10,11 @@
 - Drizzle schema for orders, quotes, customers, campaigns, artisans, delivery rates
 - Unit tests + CI
 
+## ✅ Phase 0.5 — Product-grade storefront
+- White-label store config (brand, colours, campaign, feature switches)
+- Photo-led design, gallery, ratings & reviews, MRP / % off, sort & price filters
+- Wishlist, recently viewed, pincode delivery check, mobile bottom nav, SEO structured data
+
 ## Phase 1 — Take real orders
 - [ ] Phone OTP login (Auth.js + MSG91 / WhatsApp OTP)
 - [ ] Checkout: address, pincode serviceability, delivery fee

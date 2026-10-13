@@ -14,6 +14,8 @@ export type CartItem = {
   sku: string;
   productSlug: string;
   name: string;
+  image?: string;
+  icon?: string;
   variantName: string;
   unitPrice: number;
   quantity: number;
