@@ -90,3 +90,41 @@ h3 {
 .kumbha-rise {
   animation: kumbha-rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+
+/* Potter's wheel (homepage hero) */
+.wheel-stage {
+  --wheel-clay: radial-gradient(circle at 50% 50%, #9c6544 0%, #8d5a3b 55%, #7a4a2f 100%);
+  --wheel-grooves: repeating-radial-gradient(circle at 50% 50%, rgba(60, 28, 12, 0.28) 0 1.5px, rgba(255, 220, 190, 0.05) 1.5px 4px, transparent 4px 13px);
+  /* uneven slip streaks make the rotation visible */
+  --wheel-streaks: conic-gradient(from 20deg, rgba(255, 225, 195, 0.18) 0deg 14deg, transparent 14deg 95deg, rgba(60, 25, 10, 0.18) 95deg 120deg, transparent 120deg 200deg, rgba(255, 225, 195, 0.12) 200deg 222deg, transparent 222deg 300deg, rgba(60, 25, 10, 0.14) 300deg 318deg, transparent 318deg);
+}
+@keyframes wheel-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes wheel-unturn {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.wheel-spin {
+  animation: wheel-turn var(--spin, 70s) linear infinite;
+}
+.wheel-counter {
+  animation: wheel-unturn var(--spin, 70s) linear infinite;
+}
+.wheel-stage:hover .wheel-spin,
+.wheel-stage:hover .wheel-counter,
+.wheel-stage:focus-within .wheel-spin,
+.wheel-stage:focus-within .wheel-counter,
+.wheel-stage:active .wheel-spin,
+.wheel-stage:active .wheel-counter {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wheel-spin,
+  .wheel-counter {
+    animation: none !important;
+  }
+}

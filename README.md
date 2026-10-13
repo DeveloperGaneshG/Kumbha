@@ -19,7 +19,7 @@ Everything brand-specific lives in [`src/config/store.ts`](src/config/store.ts):
 
 The Kumbha mark is a kalash (the "kumbha" pot) crowned with a diya flame. It lives in [`src/components/logo.tsx`](src/components/logo.tsx) and follows the brand colours from the store config. Ready-to-use files for print, WhatsApp and social profiles are in `public/brand/` (`kumbha-logo.svg`, `kumbha-mark.svg`, `kumbha-app-icon.svg`); the browser tab icon is `src/app/icon.svg`.
 
-The homepage banner shows every category inside kalash-shaped windows over a soft blur of the same photos (`src/components/hero-collage.tsx`). The festival's category takes the big centre pot; change `campaign` in the store config each season.
+The homepage banner is a potter's wheel (`src/components/potters-wheel.tsx`): every category rides on a clay plate as the wheel slowly turns, with the Kumbha mark at the hub. Hovering, tapping or tabbing to it stops the wheel; it stays still for visitors who turn off animations. The headline is `hero` in the store config, and the festival category (`campaign`) takes the first plate.
 
 ## Storefront features
 

@@ -160,7 +160,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     storefront: "FESTIVE",
     sellingModes: ["SHIP_TO_HOME", "MADE_TO_ORDER", "QUOTE"],
     emoji: "🪀",
-    image: "https://images.unsplash.com/photo-1703581698778-2224c729135b",
+    image: "https://images.unsplash.com/photo-1714618888538-8d15a9228236",
     sortOrder: 5,
     rules: {
       unit: "piece",

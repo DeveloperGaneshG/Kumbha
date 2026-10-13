@@ -36,6 +36,12 @@ export const store = {
 
   announcement: "Free delivery in Vijayawada & Guntur on orders above ₹999",
 
+  /** Homepage banner (the potter's wheel). The campaign below adds the countdown and main button. */
+  hero: {
+    headline: "Shaped by hand, delivered to your door",
+    subline: "Pots from Kondapalli, toys from Etikoppaka, diyas for Diwali — and bricks for the home they go in.",
+  },
+
   /** Homepage campaign. Change the date and copy each festival. */
   campaign: {
     name: "Diwali",
