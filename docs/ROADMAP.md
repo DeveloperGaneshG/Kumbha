@@ -15,6 +15,21 @@
 - Photo-led design, gallery, ratings & reviews, MRP / % off, sort & price filters
 - Wishlist, recently viewed, pincode delivery check, mobile bottom nav, SEO structured data
 
+## ✅ Phase 0.6 — Ideas from reference stores
+- Combos, frequently bought together, tiered cart offers, gift wrap & note
+- Gift finder, festival order-by cut-off, GI/origin badges, dispatch labels
+- Trust numbers, testimonials, FAQs, care guide, craft origin stories
+- Bricks: per-unit price, IS specs, requirement call-back form, mobile action bar
+
+## Ideas for later (seen on reference sites)
+- [ ] Short product videos in grids and on product pages
+- [ ] Before/after comparison slider (plastic vs clay kitchen)
+- [ ] Customer photo gallery / "in real homes" lookbook
+- [ ] Shop by craft or by state (GI map)
+- [ ] Lab-test reports for food-safe claims
+- [ ] Coupon codes and a membership / loyalty programme
+- [ ] Colour-swatch browsing for facing bricks
+
 ## Phase 1 — Take real orders
 - [ ] Phone OTP login (Auth.js + MSG91 / WhatsApp OTP)
 - [ ] Checkout: address, pincode serviceability, delivery fee

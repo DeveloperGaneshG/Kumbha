@@ -45,6 +45,12 @@ export type CategoryRules = {
   showSizeVisualizer?: boolean;
   /** Festivals this category peaks in (slugs from seasons.ts) */
   seasons?: string[];
+  /** How-to / care guide shown on the category page */
+  guide?: { title: string; intro?: string; steps: { title: string; body: string }[] };
+  /** Category-specific questions shown on the category page */
+  faqs?: { q: string; a: string }[];
+  /** Craft origin story for GI / heritage categories */
+  origin?: { place: string; gi?: boolean; story: string };
 };
 
 function fieldValidator(field: AttributeField): z.ZodType {

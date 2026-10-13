@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { allProducts, fromPrice, getProduct, listCategories, relatedProducts } from "@/lib/catalog";
+import { allProducts, bundlesWith, cartMode, fromPrice, getProducts, getProduct, listCategories, relatedProducts, type ProductView } from "@/lib/catalog";
+import { BundleCard, OrderByBanner } from "@/components/sections";
+import { FrequentlyBought, type FbtItem } from "@/components/frequently-bought";
 import { formatAttributes } from "@/lib/category-template";
 import { store, img } from "@/config/store";
 import { ProductActions } from "@/components/product-actions";
@@ -36,7 +38,34 @@ export default async function ProductPage({ params }: Props) {
   const p = await getProduct(slug);
   if (!p) notFound();
   const { category: c } = p;
-  const [cats, related, all] = await Promise.all([listCategories(), relatedProducts(p, 8), allProducts()]);
+  const [cats, related, all, pairs, combos] = await Promise.all([
+    listCategories(),
+    relatedProducts(p, 8),
+    allProducts(),
+    getProducts(p.pairsWith),
+    bundlesWith(p.slug),
+  ]);
+  // Frequently bought together: this product + its pairings, using each one's cheapest in-stock option
+  const toFbt = (x: ProductView, isMain = false): FbtItem | null => {
+    const mode = cartMode(x);
+    const v = [...x.variants].sort((a, b) => a.price - b.price).find((v) => v.stock > 0);
+    if (!mode || !v) return null;
+    return {
+      sku: v.sku,
+      productSlug: x.slug,
+      name: x.name,
+      image: x.images[0],
+      icon: x.category.emoji,
+      variantName: v.name,
+      unitPrice: v.price,
+      gstRate: x.gstRate,
+      mode,
+      tiers: x.priceTiers,
+      rules: x.category.rules,
+      isMain,
+    };
+  };
+  const fbt = [toFbt(p, true), ...pairs.map((x) => toFbt(x))].filter((x): x is FbtItem => Boolean(x));
   const parent = c.parentSlug ? cats.find((x) => x.slug === c.parentSlug) : null;
   const specs = formatAttributes(c.attributeSchema, p.attributes);
   const heightFt = typeof p.attributes.heightFt === "number" ? p.attributes.heightFt : null;
@@ -106,6 +135,8 @@ export default async function ProductPage({ params }: Props) {
             variants={p.variants}
           />
 
+          {p.sellingModes.some((m) => m === "SHIP_TO_HOME" || m === "LOCAL_DELIVERY") && <OrderByBanner compact />}
+
           <div className="flex gap-2">
             {store.features.wishlist && <WishlistButton slug={p.slug} name={p.name} variant="button" />}
             <a
@@ -151,6 +182,23 @@ export default async function ProductPage({ params }: Props) {
         <div>
           <h2 className="text-2xl font-bold">About this product</h2>
           <p className="mt-3 max-w-prose leading-relaxed text-muted">{p.description}</p>
+          {p.origin && (
+            <div className="mt-8 flex gap-4 rounded-2xl border border-line p-5">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-soft text-sm font-extrabold text-brand">
+                {p.origin.gi ? "GI" : "📍"}
+              </span>
+              <div>
+                <p className="font-semibold">
+                  {p.origin.gi ? `GI-tagged craft from ${p.origin.place}` : `Made in ${p.origin.place}`}
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  {p.origin.gi
+                    ? "A Geographical Indication certifies that this craft can only come from its place of origin — so you get the real thing, made by the community that created it."
+                    : "Made by craftspeople we work with directly, so you know where your money goes."}
+                </p>
+              </div>
+            </div>
+          )}
           {p.artisan && (
             <div className="mt-8 rounded-2xl bg-brand-soft p-6">
               <p className="text-sm font-semibold text-brand">Made by</p>
@@ -182,6 +230,23 @@ export default async function ProductPage({ params }: Props) {
           </div>
         )}
       </section>
+
+      {fbt.length > 1 && (
+        <section className="mt-16">
+          <FrequentlyBought items={fbt} />
+        </section>
+      )}
+
+      {combos.length > 0 && (
+        <section className="mt-16">
+          <SectionHeader title="Save with a combo" href="/combos" />
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {combos.map((b) => (
+              <BundleCard key={b.slug} b={b} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {c.rules.showCalculator && (
         <section className="mt-16">

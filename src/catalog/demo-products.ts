@@ -43,6 +43,14 @@ export type DemoProduct = {
   variants: DemoVariant[];
   priceTiers?: PriceTier[];
   artisan?: { name: string; village: string; craft: string; story: string };
+  /** Where it's made. `gi` marks a Geographical Indication craft. */
+  origin?: { place: string; gi?: boolean };
+  /** Gift finder tags: family, kids, return-gift, corporate */
+  tags?: string[];
+  /** Days to dispatch when in stock (shown as "Ships in N days") */
+  shipsInDays?: number;
+  /** Frequently bought together */
+  pairsWith?: string[];
 };
 
 const u = (id: string) => `https://images.unsplash.com/photo-${id}`;
@@ -61,6 +69,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   // ── Clay pots ──
   {
     slug: "clay-water-matka",
+    origin: { place: "Kondapalli" }, tags: ["family"], shipsInDays: 2, pairsWith: ["clay-kulhad-set", "terracotta-plant-pot"],
     name: "Clay Water Matka with Tap",
     nameTe: "కుళాయి తో మట్టి కుండ",
     description: "Keeps drinking water naturally cool through the summer, with no electricity. Fired from river clay and fitted with a food-grade tap.",
@@ -83,6 +92,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "clay-cooking-handi",
+    origin: { place: "Kondapalli" }, tags: ["family"], shipsInDays: 2, pairsWith: ["clay-kulhad-set", "clay-water-matka"],
     name: "Clay Cooking Handi",
     nameTe: "మట్టి వంట పాత్ర",
     description: "Unglazed clay handi for curries, dal and biryani. Slow, even heat keeps food moist and adds an earthy flavour.",
@@ -99,6 +109,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "terracotta-plant-pot",
+    origin: { place: "Kondapalli" }, tags: ["family", "corporate"], shipsInDays: 2,
     name: "Terracotta Plant Pot",
     description: "Breathable terracotta that keeps roots healthy, with a drainage hole. Bulk pricing for nurseries and landscapers.",
     highlights: ["Drainage hole", "Breathable clay prevents root rot", "Bulk price from 25 pots"],
@@ -114,6 +125,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "clay-kulhad-set",
+    origin: { place: "Kondapalli" }, tags: ["family", "return-gift", "corporate"], shipsInDays: 2, pairsWith: ["clay-cooking-handi"],
     name: "Clay Kulhad Cups (Set of 6)",
     description: "Traditional chai cups with a smoky, earthy taste. Reusable, or compostable when you're done.",
     categorySlug: "clay-pots",
@@ -130,6 +142,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   // ── Diwali ──
   {
     slug: "hand-painted-diya-set",
+    origin: { place: "Kondapalli" }, tags: ["family", "return-gift", "corporate"], shipsInDays: 1, pairsWith: ["diwali-puja-kit", "paper-lantern"],
     name: "Hand-painted Clay Diya Set",
     nameTe: "రంగుల మట్టి దీపాలు",
     description: "Twelve clay diyas painted by hand in festive colours. Ready to fill with oil and light.",
@@ -152,6 +165,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "diwali-puja-kit",
+    tags: ["family", "corporate"], shipsInDays: 1, pairsWith: ["hand-painted-diya-set", "paper-lantern"],
     name: "Lakshmi Puja Complete Kit",
     description: "Everything for Lakshmi puja in one box: diyas, kumkum, turmeric, camphor, agarbatti, cotton wicks and a kalash.",
     highlights: ["18 items", "Step-by-step puja guide in Telugu & English", "Ready to gift"],
@@ -167,6 +181,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "paper-lantern",
+    tags: ["family"], shipsInDays: 2, pairsWith: ["hand-painted-diya-set"],
     name: "Handmade Paper Lantern",
     description: "Folded paper lantern for doorways and balconies. Use with an LED bulb or tealight holder.",
     categorySlug: "diwali",
@@ -194,6 +209,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   // ── Idols ──
   {
     slug: "eco-ganesh-idol",
+    origin: { place: "Kondapalli" }, tags: ["family"],
     name: "Eco-friendly Clay Ganesh",
     nameTe: "మట్టి వినాయకుడు",
     description: "Natural clay Ganesh that dissolves in a bucket at home after the festival. Pre-book now with a 30% advance and collect on your date.",
@@ -218,6 +234,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "ganesh-desk-idol",
+    origin: { place: "Kondapalli" }, tags: ["family", "corporate"], shipsInDays: 2,
     name: "Ganesh Desk Idol with Gold Accents",
     description: "A small Ganesh for your desk, car dashboard or puja shelf. Hand-finished with gold accents.",
     categorySlug: "idols",
@@ -233,6 +250,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "durga-idol-pandal",
+    origin: { place: "Kondapalli" },
     name: "Durga Idol for Pandals",
     nameTe: "దుర్గా విగ్రహం",
     description: "Large Durga idol with lion, made to order for committees and pandals. Request a quote for 6–12 ft.",
@@ -249,6 +267,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   // ── Etikoppaka ──
   {
     slug: "etikoppaka-animal-set",
+    origin: { place: "Etikoppaka", gi: true }, tags: ["kids", "family"], shipsInDays: 3, pairsWith: ["etikoppaka-toy-train", "etikoppaka-return-gift-pack"],
     name: "Etikoppaka Wooden Animal Set",
     nameTe: "ఏటికొప్పాక చెక్క బొమ్మలు",
     description: "Hand-turned Ankudu-wood animals finished in natural lacquer. Smooth, rounded and safe for little hands.",
@@ -269,6 +288,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "etikoppaka-toy-train",
+    origin: { place: "Etikoppaka", gi: true }, tags: ["kids"], shipsInDays: 3, pairsWith: ["etikoppaka-animal-set"],
     name: "Etikoppaka Wooden Toy Train",
     description: "Pull-along train with three carriages. Personalise it with your child's name painted on the engine.",
     categorySlug: "etikoppaka-toys",
@@ -283,6 +303,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "etikoppaka-return-gift-pack",
+    origin: { place: "Etikoppaka", gi: true }, tags: ["kids", "return-gift"], shipsInDays: 3,
     name: "Return Gift Blocks Pack",
     description: "Colourful lacquered wooden blocks in a cloth pouch — bulk pricing for weddings, birthdays and Bommala Koluvu.",
     categorySlug: "etikoppaka-toys",
@@ -298,12 +319,13 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   // ── Construction ──
   {
     slug: "red-clay-bricks",
+    pairsWith: ["river-sand"],
     name: "Red Clay Bricks (Class A)",
     nameTe: "ఎర్ర ఇటుకలు",
     description: "Kiln-fired first-class red bricks with uniform size and sharp edges. Priced per 1,000; a tractor load is about 3,000 bricks.",
     highlights: ["Compressive strength 7.5 N/mm²", "Delivered by tractor or lorry", "GST invoice", "Credit for regular contractors"],
     categorySlug: "construction",
-    attributes: { material: "Red clay brick", size: "9 × 4 × 3 in", grade: "Class A", strengthMpa: 7.5, perTrip: 3000 },
+    attributes: { material: "Red clay brick", size: "9 × 4 × 3 in", grade: "Class A", strengthMpa: 7.5, waterAbsorption: 15, standard: "IS 1077", perTrip: 3000 },
     images: [u("1495578942200-c5f5d2137def"), u("1520758594221-872948699332")],
     basePrice: rupees(8500),
     unit: "1000 bricks",
@@ -316,10 +338,11 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
   },
   {
     slug: "fly-ash-bricks",
+    pairsWith: ["river-sand"],
     name: "Fly-ash Bricks",
     description: "Uniform, lighter and stronger than clay bricks, so you need less plaster. Made to IS 12894.",
     categorySlug: "construction",
-    attributes: { material: "Fly-ash brick", size: "230 × 110 × 75 mm", grade: "IS 12894", strengthMpa: 10, perTrip: 3500 },
+    attributes: { material: "Fly-ash brick", size: "230 × 110 × 75 mm", grade: "Class 10", strengthMpa: 10, waterAbsorption: 12, standard: "IS 12894", perTrip: 3500 },
     images: [u("1707636497375-fa03615149b2"), u("1612529505363-07a363324da7")],
     basePrice: rupees(7200),
     unit: "1000 bricks",

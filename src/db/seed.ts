@@ -5,7 +5,8 @@
 import "dotenv/config";
 import { eq } from "drizzle-orm";
 import { db } from "./index";
-import { artisans, categories, deliveryRates, priceTiers, products, productVariants, reviews } from "./schema";
+import { artisans, bundles, categories, deliveryRates, priceTiers, products, productVariants, reviews } from "./schema";
+import { BUNDLES } from "@/catalog/bundles";
 import { CATEGORY_PRESETS } from "@/catalog/presets";
 import { DEMO_PRODUCTS, DEMO_DELIVERY_RATES } from "@/catalog/demo-products";
 import { buildAttributeValidator } from "@/lib/category-template";
@@ -62,6 +63,10 @@ async function main() {
       ratingAvg: p.rating ?? 0,
       ratingCount: p.reviewCount ?? 0,
       isNew: Boolean(p.isNew),
+      origin: p.origin ?? null,
+      tags: p.tags ?? [],
+      shipsInDays: p.shipsInDays ?? null,
+      pairsWith: p.pairsWith ?? [],
       basePrice: p.basePrice,
       unit: p.unit ?? preset.rules.unit ?? "piece",
       gstRate: p.gstRate,
@@ -85,6 +90,11 @@ async function main() {
     if (p.priceTiers?.length) await db.insert(priceTiers).values(p.priceTiers.map((t) => ({ ...t, productId: prod.id })));
   }
   console.log(`✓ ${DEMO_PRODUCTS.length} products`);
+
+  for (const b of BUNDLES) {
+    await db.insert(bundles).values(b).onConflictDoUpdate({ target: bundles.slug, set: b });
+  }
+  console.log(`✓ ${BUNDLES.length} combos`);
 
   await db.delete(deliveryRates);
   await db.insert(deliveryRates).values(DEMO_DELIVERY_RATES);

@@ -70,13 +70,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
             <nav aria-label="Categories" className="mx-auto max-w-7xl px-4">
               <ul className="scroller -mb-px flex gap-6 overflow-x-auto text-[15px]">
-                {categories.map((c) => (
-                  <li key={c.slug} className="shrink-0">
+                {[
+                  ...categories.map((c) => ({ href: c.storefront === "BUILD" ? "/build" : `/c/${c.slug}`, label: c.name })),
+                  { href: "/combos", label: "Combos" },
+                  { href: "/gifts", label: "Gift finder" },
+                ].map((l) => (
+                  <li key={l.href} className="shrink-0">
                     <Link
-                      href={c.storefront === "BUILD" ? "/build" : `/c/${c.slug}`}
+                      href={l.href}
                       className="block border-b-2 border-transparent pb-2.5 font-medium text-muted transition-colors hover:border-ink hover:text-ink"
                     >
-                      {c.name}
+                      {l.label}
                     </Link>
                   </li>
                 ))}
@@ -109,6 +113,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <div>
                 <p className="font-semibold">Help</p>
                 <ul className="mt-3 space-y-2 text-sm text-muted">
+                  <li><Link href="/gifts" className="hover:text-ink">Gift finder</Link></li>
+                  <li><Link href="/combos" className="hover:text-ink">Combos</Link></li>
                   <li><Link href="/quote" className="hover:text-ink">Bulk & wholesale quotes</Link></li>
                   <li><Link href="/build#calculator" className="hover:text-ink">Brick calculator</Link></li>
                   <li><Link href="/wishlist" className="hover:text-ink">Saved items</Link></li>

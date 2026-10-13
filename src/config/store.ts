@@ -40,6 +40,8 @@ export const store = {
   campaign: {
     name: "Diwali",
     date: "2026-11-08",
+    /** Last day to order for delivery before the festival (shown as a banner) */
+    orderBy: "2026-11-03",
     headline: "Light up Diwali with handmade clay diyas",
     subline: "Hand-painted diyas, puja kits and lanterns, delivered before the festival.",
     image: "https://images.unsplash.com/photo-1577083753695-e010191bacb5",
@@ -51,6 +53,54 @@ export const store = {
     { title: "Breakage-safe packing", body: "Fragile items are double-boxed. Arrived broken? Send a photo and we replace it." },
     { title: "GST invoice on every order", body: "Business buyers can add their GSTIN at checkout." },
     { title: "Order on WhatsApp", body: "Prefer to chat? Send us your list and we’ll handle the rest." },
+  ],
+
+  /** Automatic cart discounts — spend more, save more. Amounts in paise. */
+  offerTiers: [
+    { minSubtotal: 150000, percent: 5 },
+    { minSubtotal: 300000, percent: 10 },
+  ],
+
+  /** Optional gift wrap offered in the cart */
+  giftWrap: { price: 4900, label: "Handmade paper gift wrap with a handwritten note" },
+
+  /** Trust numbers shown on the homepage. SAMPLE FIGURES — replace with your real numbers before launch. */
+  stats: [
+    { value: "4.7/5", label: "from 2,100+ reviews" },
+    { value: "25,000+", label: "orders delivered" },
+    { value: "60+", label: "artisans we work with" },
+    { value: "9", label: "craft villages" },
+  ],
+
+  /** SAMPLE testimonials — replace with real customer quotes (with permission). */
+  testimonials: [
+    { name: "Padmavathi K.", city: "Vijayawada", product: "Clay Water Matka", body: "Water stays cold all day, and the pot arrived without a single crack. Ordered two more for my daughter." },
+    { name: "Ravi Teja", city: "Hyderabad", product: "Eco-friendly Clay Ganesh", body: "Booked a month ahead, collected on the exact day. The idol dissolved fully in a bucket on our balcony." },
+    { name: "Divya N.", city: "Chennai", product: "Etikoppaka Animal Set", body: "My one-year-old chews everything. These are smooth, the colours haven't faded, and I know exactly who made them." },
+    { name: "Suresh Builders", city: "Guntur", product: "Red Clay Bricks", body: "Quote in two hours, delivery the next morning, GST invoice on time. Our regular supplier now." },
+  ],
+
+  /** Gift finder: budgets (rupees) and who it's for (matches product `tags`) */
+  giftBudgets: [
+    { label: "Under ₹500", max: 500 },
+    { label: "₹500 – ₹1,000", min: 500, max: 1000 },
+    { label: "₹1,000 – ₹2,500", min: 1000, max: 2500 },
+    { label: "Above ₹2,500", min: 2500 },
+  ],
+  giftRecipients: [
+    { tag: "family", label: "For family", body: "Diyas, puja kits and cookware for the home" },
+    { tag: "kids", label: "For kids", body: "Child-safe Etikoppaka toys" },
+    { tag: "return-gift", label: "Return gifts", body: "Bulk prices from 20 pieces" },
+    { tag: "corporate", label: "Corporate gifting", body: "Branded boxes for teams and clients" },
+  ],
+
+  faqs: [
+    { q: "Will clay items arrive without breaking?", a: "Every fragile item is wrapped in paper and double-boxed with corrugated sheets. If anything arrives broken, send us a photo within 48 hours and we'll replace it free." },
+    { q: "How do I book a Ganesh or Durga idol?", a: "Choose your size, pick a pickup date and pay a 30% advance. We make your idol to order and you pay the balance when you collect it." },
+    { q: "Are Etikoppaka toys safe for babies?", a: "Yes. They're turned from soft Ankudu wood and coloured with lac and natural vegetable dyes — no synthetic paint — with rounded edges." },
+    { q: "Do you deliver bricks and sand to my site?", a: "Yes, within about 60 km of our yard by tractor or lorry. Send your quantity and site location and we'll quote a price including transport." },
+    { q: "Can I order on WhatsApp instead?", a: "Yes. Send us your list on WhatsApp and we'll confirm prices, delivery and payment there." },
+    { q: "Do you give GST invoices?", a: "Every order gets a GST invoice. Add your GSTIN at checkout or in your quote request for a business invoice." },
   ],
 
   features: {

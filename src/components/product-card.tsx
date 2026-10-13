@@ -6,8 +6,12 @@ import { WishlistButton } from "./wishlist-button";
 import { Price, RatingInline } from "./ui";
 
 /** One line under the price telling the shopper how this item is bought. */
-function buyHint(p: ProductView): string {
+function buyHint(p: ProductView): { text: string; ready?: boolean } | string {
   const m = p.sellingModes[0];
+  const inStock = p.variants.some((v) => v.stock > 0);
+  if ((m === "SHIP_TO_HOME" || m === "LOCAL_DELIVERY") && inStock && p.shipsInDays) {
+    return { text: `Ready to ship · dispatched in ${p.shipsInDays} ${p.shipsInDays === 1 ? "day" : "days"}`, ready: true };
+  }
   switch (m) {
     case "PRE_BOOK":
       return `Pre-book · pay ${p.category.rules.advancePercent ?? 30}% now`;
@@ -51,6 +55,11 @@ export function ProductCard({ p, priority = false }: { p: ProductView; priority?
             {deal && !catalogOnly && <span className="rounded-md bg-sale px-2 py-0.5 text-xs font-bold text-white">{deal.pct}% off</span>}
             {p.isNew && <span className="rounded-md bg-ink px-2 py-0.5 text-xs font-semibold text-white">New</span>}
           </div>
+          {p.origin && (
+            <span className="absolute bottom-2.5 left-2.5 rounded-md bg-white/95 px-2 py-0.5 text-xs font-semibold text-ink shadow-sm ring-1 ring-black/5">
+              {p.origin.gi ? `GI · ${p.origin.place}` : `Made in ${p.origin.place}`}
+            </span>
+          )}
         </div>
         <div className="flex flex-1 flex-col gap-1 pt-3">
           <h3 className="line-clamp-2 font-semibold leading-snug">{p.name}</h3>
@@ -66,7 +75,19 @@ export function ProductCard({ p, priority = false }: { p: ProductView; priority?
                 {p.unit !== "piece" && <span className="text-sm text-muted">/ {p.unit}</span>}
               </span>
             )}
-            <p className="mt-0.5 text-sm text-muted">{buyHint(p)}</p>
+            {p.unit.startsWith("1000") && !catalogOnly && (
+              <p className="text-sm text-muted">
+                ≈ ₹{(price / 100 / 1000).toFixed(2)} per {p.unit.replace(/^1000\s*/, "").replace(/s$/, "")}
+              </p>
+            )}
+            {(() => {
+              const h = buyHint(p);
+              return typeof h === "string" ? (
+                <p className="mt-0.5 text-sm text-muted">{h}</p>
+              ) : (
+                <p className="mt-0.5 text-sm font-medium text-success">{h.text}</p>
+              );
+            })()}
           </div>
         </div>
       </Link>

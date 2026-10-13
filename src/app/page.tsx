@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { allProducts, featuredProducts, fromPrice, listCategories, newArrivals, topDeals } from "@/lib/catalog";
+import { allProducts, featuredProducts, fromPrice, listBundles, listCategories, newArrivals, topDeals } from "@/lib/catalog";
+import { daysUntilFestival } from "@/lib/campaign";
+import { BundleCard, Faq, OrderByBanner, Testimonials, TrustStats } from "@/components/sections";
 import { store } from "@/config/store";
 import { ProductGrid, ProductRow } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
@@ -12,22 +14,18 @@ export const dynamic = "force-dynamic";
 
 const PROMISE_ICONS = [HandIcon, ShieldIcon, ReceiptIcon, ChatIcon];
 
-function daysUntil(date: string) {
-  const ms = new Date(`${date}T00:00:00+05:30`).getTime() - Date.now();
-  return Math.ceil(ms / 86_400_000);
-}
-
 export default async function Home() {
-  const [categories, featured, deals, fresh, all] = await Promise.all([
+  const [categories, featured, deals, fresh, all, bundles] = await Promise.all([
     listCategories(),
     featuredProducts(8),
     topDeals(8),
     newArrivals(4),
     allProducts(),
+    listBundles(),
   ]);
   const top = categories.filter((c) => !c.parentSlug);
   const { campaign } = store;
-  const days = daysUntil(campaign.date);
+  const days = daysUntilFestival();
   const idols = top.find((c) => c.slug === "idols");
   const build = top.find((c) => c.storefront === "BUILD");
 
@@ -58,6 +56,10 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="mx-auto mt-4 max-w-7xl px-4">
+        <OrderByBanner />
+      </section>
+
       {/* Category rail */}
       <section className="mx-auto mt-10 max-w-7xl px-4" aria-label="Shop by category">
         <ul className="scroller -mx-4 flex gap-4 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-5 md:px-0">
@@ -78,6 +80,52 @@ export default async function Home() {
           <ProductRow products={deals.slice(0, 4)} />
         </section>
       )}
+
+      {bundles.length > 0 && (
+        <section className="mx-auto mt-16 max-w-7xl px-4">
+          <SectionHeader title="Combos that save more" href="/combos" />
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {bundles.slice(0, 3).map((b) => (
+              <BundleCard key={b.slug} b={b} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Gift finder */}
+      <section className="mx-auto mt-16 max-w-7xl px-4">
+        <SectionHeader title="Find a gift" href="/gifts" linkLabel="All gifts" />
+        <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+          <div className="rounded-2xl bg-surface p-6">
+            <p className="font-semibold">By budget</p>
+            <ul className="mt-4 grid grid-cols-2 gap-3">
+              {store.giftBudgets.map((b) => (
+                <li key={b.label}>
+                  <Link
+                    href={`/gifts?${new URLSearchParams(Object.entries({ min: b.min, max: b.max }).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)])).toString()}`}
+                    className="flex h-full items-center justify-center rounded-xl border border-line bg-white px-3 py-5 text-center font-bold transition-colors hover:border-ink"
+                  >
+                    {b.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <ul className="grid grid-cols-2 gap-3">
+            {store.giftRecipients.map((r) => (
+              <li key={r.tag}>
+                <Link
+                  href={r.tag === "corporate" ? "/gifts?for=corporate" : `/gifts?for=${r.tag}`}
+                  className="flex h-full flex-col justify-end rounded-2xl bg-brand-soft p-5 transition-colors hover:bg-brand hover:text-white"
+                >
+                  <span className="text-lg font-bold">{r.label}</span>
+                  <span className="mt-1 text-sm opacity-80">{r.body}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {/* Two feature banners */}
       <section className="mx-auto mt-16 grid max-w-7xl gap-4 px-4 md:grid-cols-2">
@@ -103,6 +151,10 @@ export default async function Home() {
             </div>
           </Link>
         )}
+      </section>
+
+      <section className="mx-auto mt-16 max-w-7xl px-4">
+        <TrustStats />
       </section>
 
       <section className="mx-auto mt-16 max-w-7xl px-4">
@@ -154,6 +206,15 @@ export default async function Home() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto mt-16 max-w-7xl px-4">
+        <SectionHeader title="What customers say" />
+        <Testimonials />
+      </section>
+
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <Faq items={store.faqs} />
       </section>
 
       {store.features.recentlyViewed && (

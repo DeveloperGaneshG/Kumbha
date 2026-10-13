@@ -52,6 +52,10 @@ export type ProductView = {
   variants: VariantView[];
   priceTiers: PriceTier[];
   artisan: { name: string; village: string | null; craft: string | null; story: string | null } | null;
+  origin: { place: string; gi?: boolean } | null;
+  tags: string[];
+  shipsInDays: number | null;
+  pairsWith: string[];
 };
 
 export { SORT_OPTIONS, type SortKey } from "./sort";
@@ -120,6 +124,10 @@ const demoProducts: ProductView[] = DEMO_PRODUCTS.map((p) => {
     variants: p.variants.map((v) => ({ sku: v.sku, name: v.name, price: v.price, mrp: v.mrp ?? null, stock: v.stock, capacity: v.capacity ?? null })),
     priceTiers: p.priceTiers ?? [],
     artisan: p.artisan ?? null,
+    origin: p.origin ?? null,
+    tags: p.tags ?? [],
+    shipsInDays: p.shipsInDays ?? null,
+    pairsWith: p.pairsWith ?? [],
   };
 });
 
@@ -193,6 +201,10 @@ async function dbProducts(): Promise<ProductView[]> {
         variants: p.variants.map((v) => ({ sku: v.sku, name: v.name, price: v.price, mrp: v.mrp, stock: v.stock, capacity: v.capacity })),
         priceTiers: p.priceTiers.map((t) => ({ minQty: t.minQty, unitPrice: t.unitPrice })),
         artisan: p.artisan,
+        origin: p.origin,
+        tags: p.tags,
+        shipsInDays: p.shipsInDays,
+        pairsWith: p.pairsWith,
       },
     ];
   });
@@ -287,6 +299,62 @@ export async function searchProducts(q: string, sort?: SortKey) {
     [p.name, p.nameTe, p.description, p.category.name, ...Object.values(p.attributes).map(String)].some((s) => s?.toLowerCase().includes(term)),
   );
   return sortProducts(hits, sort);
+}
+
+/** Products for the gift finder: by recipient tag and/or budget (rupees). */
+export async function giftProducts({ tag, min, max }: { tag?: string; min?: number; max?: number }) {
+  return sortProducts(
+    (await allProducts()).filter(
+      (p) =>
+        p.tags.length > 0 &&
+        !p.sellingModes.every((m) => m === "QUOTE" || m === "CATALOG_ONLY") &&
+        (!tag || p.tags.includes(tag)) &&
+        (min === undefined || fromPrice(p) >= min * 100) &&
+        (max === undefined || fromPrice(p) < max * 100),
+    ),
+  );
+}
+
+/** First selling mode that goes through the cart, if any. */
+export const cartMode = (p: ProductView) => p.sellingModes.find((m) => m === "SHIP_TO_HOME" || m === "LOCAL_DELIVERY" || m === "PICKUP");
+
+// ── Combos ──────────────────────────────────────────────────────────────────
+
+export type BundleView = {
+  slug: string;
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+  /** Sum of the items bought separately */
+  mrp: number;
+  tags: string[];
+  items: { product: ProductView; sku: string; variantName: string; qty: number; price: number }[];
+};
+
+export async function listBundles(): Promise<BundleView[]> {
+  const { BUNDLES } = await import("@/catalog/bundles");
+  let defs = BUNDLES;
+  if (hasDatabase()) {
+    const { db } = await import("@/db");
+    const rows = await db.query.bundles.findMany({ where: (b, { eq }) => eq(b.isActive, true) });
+    defs = rows.map((r) => ({ ...r, description: r.description ?? "", image: r.image ?? "" }));
+  }
+  const all = await allProducts();
+  return defs.flatMap((b) => {
+    const items = b.items.flatMap((it) => {
+      const product = all.find((p) => p.slug === it.productSlug);
+      const variant = product?.variants.find((v) => v.sku === it.sku);
+      return product && variant ? [{ product, sku: it.sku, variantName: variant.name, qty: it.qty, price: variant.price }] : [];
+    });
+    if (items.length !== b.items.length) return []; // hide combos with missing items
+    const mrp = items.reduce((s, i) => s + i.price * i.qty, 0);
+    return [{ slug: b.slug, name: b.name, description: b.description, image: b.image, price: b.price, mrp, tags: b.tags ?? [], items }];
+  });
+}
+
+export async function bundlesWith(productSlug: string) {
+  return (await listBundles()).filter((b) => b.items.some((i) => i.product.slug === productSlug));
 }
 
 export async function listDeliveryRates(storefront: "FESTIVE" | "BUILD"): Promise<DeliveryRate[]> {

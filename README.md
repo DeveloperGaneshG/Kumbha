@@ -13,7 +13,7 @@ A multi-category commerce platform for **handmade, festive and building products
 
 ## Rebrand it in one file
 
-Everything brand-specific lives in [`src/config/store.ts`](src/config/store.ts): store name, colours, contact details, announcement bar, homepage festival campaign (with countdown), delivery pincodes, promises, and feature switches (wishlist, reviews, WhatsApp ordering, Telugu names, recently viewed). Change it and the whole storefront follows — so the same codebase can run a different shop.
+Everything brand-specific lives in [`src/config/store.ts`](src/config/store.ts): store name, colours, contact details, announcement bar, homepage festival campaign (with countdown), delivery pincodes, promises, and feature switches (wishlist, reviews, WhatsApp ordering, Telugu names, recently viewed). Offers, gift budgets, testimonials, trust numbers and FAQs are in the same file (the stats and testimonials are samples — replace them with your real ones). Change it and the whole storefront follows — so the same codebase can run a different shop.
 
 ## Storefront features
 
@@ -22,6 +22,10 @@ Everything brand-specific lives in [`src/config/store.ts`](src/config/store.ts):
 - **Product:** photo gallery, price with MRP and % off, option picker, quantity stepper, buy box that adapts to the selling mode, bulk price tiers, pincode delivery check, wishlist, WhatsApp share, highlights, specifications, maker profile, ratings summary and reviews, related products, Google rich-result structured data
 - **Wishlist & recently viewed** (saved in the browser), **cart** grouped by selling mode with free-delivery progress and advance-payment split
 - **Mobile:** app-style bottom navigation, horizontally scrolling rows, sticky header with search
+- **Selling more per order:** combos with savings (`/combos`, `src/catalog/bundles.ts`), "frequently bought together" with tick-boxes, spend-more-save-more cart offers (`offerTiers`), gift wrap with a handwritten note
+- **Gifting:** gift finder by budget and recipient (`/gifts`), return-gift and corporate paths, "order by … for delivery before Diwali" cut-off banner (`campaign.orderBy`)
+- **Trust & story:** GI-tag / origin badges, "Ready to ship · dispatched in N days" labels, craft origin stories, trust numbers, customer testimonials, FAQs, clay-pot care guide
+- **Construction:** per-brick price on cards, strength / water absorption / IS standard specs, "Share your requirement" call-back form, quality promises, sticky Call / Share bar on phones
 - Accessible: skip link, visible focus, labelled controls, reduced-motion support
 
 Sample photos are free Unsplash images standing in for real product photography — replace the URLs in `src/catalog/` before launch. Missing or broken photos fall back to a neutral tile.

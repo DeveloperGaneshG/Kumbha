@@ -33,6 +33,8 @@ export function ProductImage({
   }, []);
 
   if (!src || failed) {
+    // Decorative background photos (no icon) fall back to nothing, so text over them stays readable
+    if (!fallbackIcon) return <div aria-hidden className={className.replace(/\bopacity-\S+/g, "")} />;
     return (
       <div className={`flex items-center justify-center bg-surface text-5xl ${className}`} role={alt ? "img" : undefined} aria-label={alt || undefined}>
         {fallbackIcon && <span aria-hidden>{fallbackIcon}</span>}

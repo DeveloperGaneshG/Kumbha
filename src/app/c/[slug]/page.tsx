@@ -9,6 +9,7 @@ import { SortSelect } from "@/components/sort-select";
 import { Breadcrumbs } from "@/components/ui";
 import { FilterIcon } from "@/components/icons";
 import { MODES } from "@/lib/selling-modes";
+import { Faq, OrderByBanner } from "@/components/sections";
 import { rupees } from "@/lib/money";
 
 export const dynamic = "force-dynamic";
@@ -131,6 +132,12 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         <ProductImage src={category.image} alt="" width={700} fallbackIcon={category.emoji} className="hidden aspect-[16/10] w-full rounded-2xl md:block" />
       </header>
 
+      {category.sellingModes.some((m) => m === "SHIP_TO_HOME" || m === "LOCAL_DELIVERY") && (
+        <div className="mt-6">
+          <OrderByBanner />
+        </div>
+      )}
+
       {category.rules.legalNotice && (
         <p role="note" className="mt-6 rounded-xl border border-accent/60 bg-accent/10 p-4 text-sm">
           <strong>Please note:</strong> {category.rules.legalNotice}
@@ -191,6 +198,40 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           )}
         </div>
       </div>
+
+      {category.rules.origin && (
+        <section className="mt-16 grid gap-6 rounded-2xl bg-brand-soft p-6 md:grid-cols-[auto_1fr] md:p-10">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-lg font-extrabold text-brand">
+            {category.rules.origin.gi ? "GI" : "📍"}
+          </span>
+          <div>
+            <h2 className="text-2xl font-bold">From {category.rules.origin.place}</h2>
+            <p className="mt-3 max-w-3xl leading-relaxed">{category.rules.origin.story}</p>
+          </div>
+        </section>
+      )}
+
+      {category.rules.guide && (
+        <section className="mt-16">
+          <h2 className="text-2xl font-bold">{category.rules.guide.title}</h2>
+          {category.rules.guide.intro && <p className="mt-2 max-w-2xl text-muted">{category.rules.guide.intro}</p>}
+          <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {category.rules.guide.steps.map((step, i) => (
+              <li key={step.title} className="rounded-2xl border border-line p-5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-bold text-white">{i + 1}</span>
+                <p className="mt-3 font-semibold">{step.title}</p>
+                <p className="mt-1 text-sm text-muted">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {category.rules.faqs && (
+        <section className="mt-16 max-w-3xl">
+          <Faq items={category.rules.faqs} title={`${category.name}: common questions`} />
+        </section>
+      )}
     </div>
   );
 }

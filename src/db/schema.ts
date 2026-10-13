@@ -102,6 +102,13 @@ export const products = pgTable(
     ratingAvg: doublePrecision("rating_avg").default(0).notNull(),
     ratingCount: integer("rating_count").default(0).notNull(),
     isNew: boolean("is_new").default(false).notNull(),
+    /** Where it's made; gi = Geographical Indication craft */
+    origin: jsonb("origin").$type<{ place: string; gi?: boolean }>(),
+    /** Gift finder tags: family, kids, return-gift, corporate */
+    tags: text("tags").array().default([]).notNull(),
+    shipsInDays: integer("ships_in_days"),
+    /** Slugs of products frequently bought together */
+    pairsWith: text("pairs_with").array().default([]).notNull(),
     /** All money is stored in paise */
     basePrice: integer("base_price").notNull(),
     unit: text("unit").default("piece").notNull(),
@@ -166,6 +173,20 @@ export const reviews = pgTable(
   },
   (t) => [index("reviews_product_idx").on(t.productId)],
 );
+
+/** Combos sold at a set price */
+export const bundles = pgTable("bundles", {
+  id: id(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  description: text("description"),
+  image: text("image"),
+  items: jsonb("items").$type<{ productSlug: string; sku: string; qty: number }[]>().notNull(),
+  price: integer("price").notNull(),
+  tags: text("tags").array().default([]).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamps.createdAt,
+});
 
 // ── Seasons & campaigns ─────────────────────────────────────────────────────
 
