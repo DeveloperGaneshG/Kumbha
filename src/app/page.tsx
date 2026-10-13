@@ -2,6 +2,9 @@ import Link from "next/link";
 import { allProducts, featuredProducts, fromPrice, listBundles, listCategories, newArrivals, topDeals } from "@/lib/catalog";
 import { daysUntilFestival } from "@/lib/campaign";
 import { HeroCollage, HeroMosaic, type HeroTile } from "@/components/hero-collage";
+import { CraftMap, Lookbook, OccasionStrip } from "@/components/stories";
+import { BeforeAfter } from "@/components/before-after";
+import { LogoMark } from "@/components/logo";
 import { BundleCard, Faq, OrderByBanner, Testimonials, TrustStats } from "@/components/sections";
 import { store } from "@/config/store";
 import { ProductGrid, ProductRow } from "@/components/product-card";
@@ -88,6 +91,11 @@ export default async function Home() {
         </ul>
       </section>
 
+      <section className="mx-auto mt-16 max-w-7xl px-4">
+        <SectionHeader title="Shop by occasion" href="/gifts" linkLabel="Gift finder" />
+        <OccasionStrip />
+      </section>
+
       {deals.length > 0 && (
         <section className="mx-auto mt-16 max-w-7xl px-4">
           <SectionHeader title="Festive deals" href={`/c/${campaign.categorySlug}`} />
@@ -105,6 +113,28 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {/* Before / after: why clay */}
+      <section className="mx-auto mt-16 max-w-7xl px-4">
+        <div className="mb-5 max-w-2xl">
+          <h2 className="text-2xl font-bold md:text-[1.75rem]">Swap plastic for clay, one pot at a time</h2>
+          <p className="mt-1 text-muted">Drag the slider. Clay keeps water cool without electricity, cooks slowly and evenly, and goes back to the earth when it&apos;s done.</p>
+        </div>
+        <BeforeAfter
+          before="https://images.unsplash.com/photo-1776535240825-ea0ad5dd10b9"
+          after="https://images.unsplash.com/photo-1790173907491-9246272c776d"
+          beforeLabel="Plastic & steel"
+          afterLabel="Clay kitchen"
+        />
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link href="/combos" className={btn.primary}>
+            Start with the Clay Kitchen Starter Set
+          </Link>
+          <Link href="/c/clay-pots" className={btn.secondary}>
+            Browse clay pots
+          </Link>
+        </div>
+      </section>
 
       {/* Gift finder */}
       <section className="mx-auto mt-16 max-w-7xl px-4">
@@ -203,23 +233,26 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Maker story */}
       <section className="mx-auto mt-16 max-w-7xl px-4">
-        <div className="grid overflow-hidden rounded-2xl bg-brand-soft md:grid-cols-2">
-          <ProductImage src={top[0]?.image} alt="A potter shaping clay on a wheel" width={1200} className="aspect-[4/3] h-full w-full md:aspect-auto" />
-          <div className="flex flex-col justify-center p-8 md:p-12">
-            <h2 className="text-3xl font-bold">Made by hands you can name</h2>
-            <p className="mt-4 max-w-md text-muted">
-              Our pots come from potters in Kondapalli, our toys from lacquer turners in Etikoppaka. Every product page tells you who made it and how — and
-              every order pays them fairly.
-            </p>
-            <div className="mt-6">
-              <Link href="/c/etikoppaka-toys" className={btn.primary}>
-                Meet the makers
-              </Link>
-            </div>
-          </div>
-        </div>
+        <CraftMap />
+      </section>
+
+      <section className="mx-auto mt-16 max-w-7xl px-4">
+        <Lookbook hashtag={`#My${store.name}Home`} />
+      </section>
+
+      {/* Greeting card maker promo */}
+      <section className="mx-auto mt-16 max-w-7xl px-4">
+        <Link href="/greetings" className="group grid items-center gap-6 overflow-hidden rounded-2xl bg-ink p-8 text-white md:grid-cols-[auto_1fr_auto] md:p-10">
+          <span className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white/10">
+            <LogoMark size={56} cutColor="#17181c" className="text-white" />
+          </span>
+          <span>
+            <span className="block text-2xl font-bold">Make a free {store.campaign.name} greeting card</span>
+            <span className="mt-1 block text-white/75">Add names and a message in Telugu or English, then share it on WhatsApp in seconds.</span>
+          </span>
+          <span className={`${btn.onDark} group-hover:bg-accent`}>Make my card</span>
+        </Link>
       </section>
 
       <section className="mx-auto mt-16 max-w-7xl px-4">

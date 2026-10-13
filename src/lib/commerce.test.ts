@@ -45,3 +45,11 @@ describe("gift finder & pairings", () => {
     }
   });
 });
+
+describe("occasions strip", () => {
+  it("leads with Diwali in mid-October", async () => {
+    const { upcomingOccasions } = await import("./seasons");
+    expect(upcomingOccasions(new Date("2026-10-13"))[0].slug).toBe("diwali");
+    expect(upcomingOccasions(new Date("2026-08-10"))[0].slug).toBe("ganesh-chaturthi");
+  });
+});

@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+// Fonts are bundled with the app (no Google Fonts request): faster, private, works offline
+import "@fontsource-variable/hanken-grotesk";
+import "@fontsource/noto-sans-telugu/400.css";
+import "@fontsource/noto-sans-telugu/600.css";
+import "@fontsource/noto-sans-telugu/800.css";
 import "./globals.css";
 import { listCategories } from "@/lib/catalog";
 import { store } from "@/config/store";
@@ -10,6 +15,8 @@ import { SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = {
+  // Absolute URLs for share previews (WhatsApp, Facebook). Set NEXT_PUBLIC_SITE_URL to your domain in production.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: { default: `${store.name} — ${store.tagline}`, template: `%s | ${store.name}` },
   description: store.description,
   openGraph: { siteName: store.name, type: "website" },
@@ -31,13 +38,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" style={themeVars}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font -- loaded once in the root layout */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
         <link rel="preconnect" href="https://images.unsplash.com" />
       </head>
       <body className="flex min-h-screen flex-col pb-16 md:pb-0">
@@ -75,6 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   ...categories.map((c) => ({ href: c.storefront === "BUILD" ? "/build" : `/c/${c.slug}`, label: c.name })),
                   { href: "/combos", label: "Combos" },
                   { href: "/gifts", label: "Gift finder" },
+                  { href: "/greetings", label: "Greetings" },
                 ].map((l) => (
                   <li key={l.href} className="shrink-0">
                     <Link
@@ -116,6 +117,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <ul className="mt-3 space-y-2 text-sm text-muted">
                   <li><Link href="/gifts" className="hover:text-ink">Gift finder</Link></li>
                   <li><Link href="/combos" className="hover:text-ink">Combos</Link></li>
+                  <li><Link href="/greetings" className="hover:text-ink">Free greeting cards</Link></li>
                   <li><Link href="/quote" className="hover:text-ink">Bulk & wholesale quotes</Link></li>
                   <li><Link href="/build#calculator" className="hover:text-ink">Brick calculator</Link></li>
                   <li><Link href="/wishlist" className="hover:text-ink">Saved items</Link></li>

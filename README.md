@@ -31,6 +31,8 @@ The homepage banner shows every category inside kalash-shaped windows over a sof
 - **Selling more per order:** combos with savings (`/combos`, `src/catalog/bundles.ts`), "frequently bought together" with tick-boxes, spend-more-save-more cart offers (`offerTiers`), gift wrap with a handwritten note
 - **Gifting:** gift finder by budget and recipient (`/gifts`), return-gift and corporate paths, "order by … for delivery before Diwali" cut-off banner (`campaign.orderBy`)
 - **Trust & story:** GI-tag / origin badges, "Ready to ship · dispatched in N days" labels, craft origin stories, trust numbers, customer testimonials, FAQs, clay-pot care guide
+- **Shareable:** free festival greeting card maker (`/greetings`, Telugu or English, shares to WhatsApp), branded link previews (`app/opengraph-image.tsx`)
+- **Story:** shop by occasion, plastic-vs-clay before/after slider, craft-villages map, "Styled at home" lookbook with #MyKumbhaHome
 - **Construction:** per-brick price on cards, strength / water absorption / IS standard specs, "Share your requirement" call-back form, quality promises, sticky Call / Share bar on phones
 - Accessible: skip link, visible focus, labelled controls, reduced-motion support
 
@@ -116,6 +118,10 @@ src/
 ## ⚠️ Crackers (bhanasancha)
 
 Online sale of firecrackers is restricted in India (Supreme Court orders since 2018, plus state rules; only certified green crackers in many areas), and sellers need a PESO licence. The `crackers` category is therefore set to `CATALOG_ONLY` + `PICKUP`, and a test enforces that it can never be shipped. **Check the current rules with a lawyer / your licensing office before changing this.**
+
+## Launch
+
+See [docs/LAUNCH_PLAN.md](docs/LAUNCH_PLAN.md) for a 3-week plan to get the first customers.
 
 ## Roadmap
 
