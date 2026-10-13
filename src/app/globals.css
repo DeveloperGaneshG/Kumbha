@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Earthy palette: terracotta, turmeric, kumkum, and a cool slate for the BUILD storefront */
+@theme {
+  --color-clay-50: #fbf5f0;
+  --color-clay-100: #f5e6da;
+  --color-clay-200: #ebcab2;
+  --color-clay-400: #d08a5c;
+  --color-clay-500: #b9663a;
+  --color-clay-600: #9c4f2b;
+  --color-clay-700: #7a3d23;
+  --color-clay-900: #3d1f12;
+  --color-turmeric: #e3a51b;
+  --color-kumkum: #b3261e;
+  --color-leaf: #3f6b3a;
+  --color-slate-build: #2f3a45;
+
+  --font-display: "Georgia", "Noto Serif Telugu", "Times New Roman", serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans Telugu", sans-serif;
+}
+
+:root {
+  --bg: var(--color-clay-50);
+  --fg: var(--color-clay-900);
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Subtle woven-mat texture for hero bands */
+.mat {
+  background-image: repeating-linear-gradient(45deg, rgb(255 255 255 / 0.06) 0 2px, transparent 2px 10px),
+    repeating-linear-gradient(-45deg, rgb(0 0 0 / 0.05) 0 2px, transparent 2px 10px);
+}
