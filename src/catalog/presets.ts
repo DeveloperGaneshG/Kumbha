@@ -40,6 +40,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     image: "https://images.unsplash.com/photo-1507022787381-b30170b5ebf4",
     sortOrder: 1,
     rules: {
+      hero: { style: "wheel", title: "Shaped by hand on the wheel", subtitle: "Matkas, cooking handis, kulhads and planters from Kondapalli potters — fired in wood kilns, delivered without a crack." },
       fragile: true,
       unit: "piece",
       deliveryRadiusKm: 40,
@@ -81,7 +82,8 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     emoji: "🪔",
     image: "https://images.unsplash.com/photo-1635192592106-77a5aacbe1a3",
     sortOrder: 2,
-    rules: { fragile: true, unit: "set", seasons: ["diwali"], badges: ["Festive pick"] },
+    rules: {
+      hero: { style: "diya", title: "Light up Diwali with handmade diyas", subtitle: "Move the lamp to see this season's diyas, puja kits and lanterns — all handmade, delivered before the festival." }, fragile: true, unit: "set", seasons: ["diwali"], badges: ["Festive pick"] },
     attributeSchema: [
       { key: "type", label: "Type", type: "select", options: ["Diya", "Lantern", "Toran", "Rangoli", "Puja kit", "Gift hamper"], required: true, filterable: true },
       { key: "piecesPerSet", label: "Pieces per set", type: "number", min: 1 },
@@ -129,6 +131,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     image: "https://images.unsplash.com/photo-1598195596234-e04b82ef8adf",
     sortOrder: 4,
     rules: {
+      hero: { style: "idol-size", title: "Choose your Ganesha's size", subtitle: "See exactly how tall each idol stands next to you, then pre-book with a 30% advance." },
       fragile: true,
       unit: "idol",
       advancePercent: 30,
@@ -163,6 +166,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     image: "https://images.unsplash.com/photo-1714618888538-8d15a9228236",
     sortOrder: 5,
     rules: {
+      hero: { style: "lacquer", title: "Colours that come from nature", subtitle: "Etikoppaka toys are coloured with lac and plant dyes, never paint. Tap a colour to see where it comes from." },
       unit: "piece",
       leadTimeDays: 10,
       badges: ["GI tagged", "Natural dyes", "Child safe"],
@@ -199,6 +203,7 @@ export const CATEGORY_PRESETS: CategoryPreset[] = [
     image: "https://images.unsplash.com/photo-1495578942200-c5f5d2137def",
     sortOrder: 6,
     rules: {
+      hero: { style: "brick-wall", title: "Build your wall, see your bricks", subtitle: "Slide to your wall size for an instant count of bricks, cement and cost — then we deliver to your site." },
       unit: "1000 bricks",
       minOrderQty: 1,
       deliveryRadiusKm: 60,

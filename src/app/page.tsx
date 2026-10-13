@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { allProducts, featuredProducts, fromPrice, listBundles, listCategories, newArrivals, topDeals } from "@/lib/catalog";
-import { daysUntilFestival } from "@/lib/campaign";
-import { PottersWheel, type WheelPlate } from "@/components/potters-wheel";
+import { CategoryHero } from "@/components/heroes/category-hero";
+import { HeroShowcase, type ShowcaseTab } from "@/components/heroes/showcase";
+import { listProducts } from "@/lib/catalog";
 import { CraftMap, Lookbook, OccasionStrip } from "@/components/stories";
 import { BeforeAfter } from "@/components/before-after";
 import { LogoMark } from "@/components/logo";
@@ -29,45 +30,26 @@ export default async function Home() {
   ]);
   const top = categories.filter((c) => !c.parentSlug);
   const { campaign } = store;
-  const days = daysUntilFestival();
   const idols = top.find((c) => c.slug === "idols");
   const build = top.find((c) => c.storefront === "BUILD");
-  // Hero: the festival's category leads, then every other category, then the gift finder
-  const hrefFor = (c: (typeof top)[number]) => (c.storefront === "BUILD" ? "/build" : `/c/${c.slug}`);
-  const festive = top.find((c) => c.slug === campaign.categorySlug);
-  const plates: WheelPlate[] = [
-    ...(festive ? [{ href: hrefFor(festive), label: festive.shortName, image: campaign.image, icon: festive.emoji }] : []),
-    ...top.filter((c) => c !== festive).map((c) => ({ href: hrefFor(c), label: c.shortName, image: c.image, icon: c.emoji })),
-    { href: "/gifts", label: "Gifts", image: "https://images.unsplash.com/photo-1508899203029-1c9eb493c9bd", icon: "🎁" },
-  ];
+  // Homepage banner: each category's own interactive banner, current festival first
+  const HINTS: Record<string, string> = { wheel: "Spin the wheel", diya: "Light the diya", "idol-size": "Pick a size", lacquer: "Natural colours", "brick-wall": "Build a wall" };
+  const heroCats = top
+    .filter((c) => c.rules.hero)
+    .sort((a, b) => Number(b.slug === campaign.categorySlug) - Number(a.slug === campaign.categorySlug));
+  const heroProducts = await Promise.all(heroCats.map((c) => listProducts(c.slug)));
+  const showcase: ShowcaseTab[] = heroCats.map((c, i) => ({
+    key: c.slug,
+    label: c.shortName,
+    hint: HINTS[c.rules.hero!.style] ?? "",
+    panel: <CategoryHero category={c} products={heroProducts[i]} variant="home" />,
+  }));
 
   return (
     <>
-      {/* Hero: the potter's wheel carries every category around */}
-      <section className="mx-auto max-w-7xl px-4 pt-5">
-        <div className="relative isolate overflow-hidden rounded-2xl" style={{ background: "linear-gradient(160deg, #f1e4d2 0%, #e3cdb0 55%, #d6b993 100%)" }}>
-          <div className="grid items-center gap-12 px-6 pb-16 pt-10 sm:px-10 md:grid-cols-[1fr_1.05fr] md:gap-6 md:py-14">
-            <div>
-              {days > 0 && days < 120 && (
-                <p className="inline-flex items-center gap-2 rounded-full bg-ink px-3 py-1 text-sm font-bold text-white">
-                  <span aria-hidden className="h-2 w-2 rounded-full bg-accent" />
-                  {campaign.name} in {days} {days === 1 ? "day" : "days"}
-                </p>
-              )}
-              <h1 className="mt-5 text-[2.4rem] font-extrabold leading-[1.02] tracking-tight text-ink sm:text-5xl lg:text-[3.6rem]">{store.hero.headline}</h1>
-              <p className="mt-5 max-w-md text-[#5e4a36] sm:text-lg">{store.hero.subline}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href={`/c/${campaign.categorySlug}`} className={btn.primary}>
-                  Shop {campaign.name}
-                </Link>
-                <Link href="/quote" className="inline-flex items-center rounded-lg border border-[#5e4a36]/40 px-5 py-3 font-semibold text-ink hover:border-ink">
-                  Bulk & gifting orders
-                </Link>
-              </div>
-            </div>
-            <PottersWheel plates={plates} />
-          </div>
-        </div>
+      {/* Hero: every craft's own interactive banner, with tabs */}
+      <section className="mx-auto max-w-7xl px-4 pt-5" aria-label="Our crafts">
+        <HeroShowcase tabs={showcase} />
       </section>
 
       <section className="mx-auto mt-4 max-w-7xl px-4">

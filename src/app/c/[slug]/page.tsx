@@ -10,6 +10,7 @@ import { Breadcrumbs } from "@/components/ui";
 import { FilterIcon } from "@/components/icons";
 import { MODES } from "@/lib/selling-modes";
 import { Faq, OrderByBanner } from "@/components/sections";
+import { CategoryHero } from "@/components/heroes/category-hero";
 import { rupees } from "@/lib/money";
 
 export const dynamic = "force-dynamic";
@@ -114,11 +115,9 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         items={[{ label: "Home", href: "/" }, ...(parent ? [{ label: parent.name, href: `/c/${parent.slug}` }] : []), { label: category.name }]}
       />
 
-      <header className="mt-4 grid items-center gap-6 md:grid-cols-[1fr_320px]">
-        <div>
-          <h1 className="text-3xl font-extrabold md:text-4xl">{category.name}</h1>
-          {category.nameTe && <p className="mt-1 font-[family-name:var(--font-telugu)] text-lg text-muted">{category.nameTe}</p>}
-          <p className="mt-3 max-w-2xl text-muted">{category.description}</p>
+      {category.rules.hero ? (
+        <div className="mt-4">
+          <CategoryHero category={category} products={await listProducts(slug)} variant="page" />
           {category.rules.badges && (
             <ul className="mt-4 flex flex-wrap gap-2">
               {category.rules.badges.map((b) => (
@@ -129,8 +128,25 @@ export default async function CategoryPage({ params, searchParams }: Props) {
             </ul>
           )}
         </div>
-        <ProductImage src={category.image} alt="" width={700} fallbackIcon={category.emoji} className="hidden aspect-[16/10] w-full rounded-2xl md:block" />
-      </header>
+      ) : (
+      <header className="mt-4 grid items-center gap-6 md:grid-cols-[1fr_320px]">
+          <div>
+            <h1 className="text-3xl font-extrabold md:text-4xl">{category.name}</h1>
+            {category.nameTe && <p className="mt-1 font-[family-name:var(--font-telugu)] text-lg text-muted">{category.nameTe}</p>}
+            <p className="mt-3 max-w-2xl text-muted">{category.description}</p>
+            {category.rules.badges && (
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {category.rules.badges.map((b) => (
+                  <li key={b} className="rounded-full bg-brand-soft px-3 py-1 text-sm font-medium text-brand">
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <ProductImage src={category.image} alt="" width={700} fallbackIcon={category.emoji} className="hidden aspect-[16/10] w-full rounded-2xl md:block" />
+        </header>
+      )}
 
       {category.sellingModes.some((m) => m === "SHIP_TO_HOME" || m === "LOCAL_DELIVERY") && (
         <div className="mt-6">
@@ -159,7 +175,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <div className="mt-8 grid gap-10 lg:grid-cols-[260px_1fr]">
         <aside className="hidden lg:block">{filters}</aside>
 
-        <div>
+        <div id="products" className="scroll-mt-36">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
             <p className="text-sm text-muted">
               {products.length} {products.length === 1 ? "product" : "products"}

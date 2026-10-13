@@ -128,3 +128,32 @@ h3 {
     animation: none !important;
   }
 }
+
+/* Diwali banner: flickering lamp flame */
+@keyframes diya-flicker {
+  0%, 100% { transform: scale(1, 1) rotate(0deg); }
+  25% { transform: scale(0.94, 1.06) rotate(-2deg); }
+  50% { transform: scale(1.04, 0.96) rotate(1.5deg); }
+  75% { transform: scale(0.97, 1.03) rotate(-1deg); }
+}
+.diya-flame {
+  transform-origin: 0 -26px;
+  animation: diya-flicker 1.6s ease-in-out infinite;
+}
+.diya-stage { touch-action: pan-y; }
+
+/* Etikoppaka banner: re-dye fade */
+@keyframes lacquer-in { from { opacity: 0.4; filter: saturate(0.4); } to { opacity: 1; filter: none; } }
+.lacquer-fade { animation: lacquer-in 500ms ease-out both; }
+
+/* Bricks banner: each course rises into place */
+@keyframes brick-rise { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+.brick-course { animation: brick-rise 380ms ease-out both; }
+
+/* Homepage showcase: tab progress */
+@keyframes showcase-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.showcase-progress { transform-origin: left; animation: showcase-progress var(--dur, 9s) linear both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .diya-flame, .lacquer-fade, .brick-course, .showcase-progress { animation: none !important; }
+}

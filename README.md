@@ -19,7 +19,17 @@ Everything brand-specific lives in [`src/config/store.ts`](src/config/store.ts):
 
 The Kumbha mark is a kalash (the "kumbha" pot) crowned with a diya flame. It lives in [`src/components/logo.tsx`](src/components/logo.tsx) and follows the brand colours from the store config. Ready-to-use files for print, WhatsApp and social profiles are in `public/brand/` (`kumbha-logo.svg`, `kumbha-mark.svg`, `kumbha-app-icon.svg`); the browser tab icon is `src/app/icon.svg`.
 
-The homepage banner is a potter's wheel (`src/components/potters-wheel.tsx`): every category rides on a clay plate as the wheel slowly turns, with the Kumbha mark at the hub. Hovering, tapping or tabbing to it stops the wheel; it stays still for visitors who turn off animations. The headline is `hero` in the store config, and the festival category (`campaign`) takes the first plate.
+Every category has its own interactive banner, chosen by `rules.hero.style` in `src/catalog/presets.ts` (components in `src/components/heroes/`):
+
+| Category | Banner | What visitors do |
+|---|---|---|
+| Clay pots | `wheel` — potter's wheel | Products ride a turning wheel; hover or tap to stop it |
+| Diwali | `diya` — light the diya | The scene is dark; the cursor/finger is a lamp that reveals products; "Light every diya" lights it all |
+| Idols | `idol-size` — choose your size | Pick 6 in to 6 ft; the idol grows next to a person, with price and pre-book |
+| Etikoppaka | `lacquer` — colours from nature | Tap lac red, turmeric, indigo or leaf green; the lacquer bands re-dye and the dye's source is explained |
+| Bricks | `brick-wall` — build your wall | Slide length and height; the wall builds itself with live bricks, cement and cost |
+
+The homepage banner shows all of them as tabs, opening on the current festival (`campaign.categorySlug`). It moves to the next one every 9 seconds until a visitor interacts. A new category can reuse any style by setting `hero` in its rules.
 
 ## Storefront features
 

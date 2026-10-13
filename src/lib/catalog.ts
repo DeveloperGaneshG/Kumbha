@@ -27,7 +27,7 @@ export type CategoryView = {
   emoji: string;
 };
 
-export type VariantView = { sku: string; name: string; price: number; mrp: number | null; stock: number; capacity: number | null };
+export type VariantView = { sku: string; name: string; options: Record<string, string>; price: number; mrp: number | null; stock: number; capacity: number | null };
 
 export type ReviewView = { name: string; city: string | null; rating: number; title: string | null; body: string | null; date: string; verified: boolean };
 
@@ -123,7 +123,7 @@ const demoProducts: ProductView[] = DEMO_PRODUCTS.map((p) => {
     rating: p.rating ?? 0,
     reviewCount: p.reviewCount ?? 0,
     reviews: p.reviews ?? [],
-    variants: p.variants.map((v) => ({ sku: v.sku, name: v.name, price: v.price, mrp: v.mrp ?? null, stock: v.stock, capacity: v.capacity ?? null })),
+    variants: p.variants.map((v) => ({ sku: v.sku, name: v.name, options: v.options, price: v.price, mrp: v.mrp ?? null, stock: v.stock, capacity: v.capacity ?? null })),
     priceTiers: p.priceTiers ?? [],
     artisan: p.artisan ?? null,
     origin: p.origin ?? null,
@@ -201,7 +201,7 @@ async function dbProducts(): Promise<ProductView[]> {
           date: r.createdAt.toISOString().slice(0, 10),
           verified: r.verified,
         })),
-        variants: p.variants.map((v) => ({ sku: v.sku, name: v.name, price: v.price, mrp: v.mrp, stock: v.stock, capacity: v.capacity })),
+        variants: p.variants.map((v) => ({ sku: v.sku, name: v.name, options: v.options, price: v.price, mrp: v.mrp, stock: v.stock, capacity: v.capacity })),
         priceTiers: p.priceTiers.map((t) => ({ minQty: t.minQty, unitPrice: t.unitPrice })),
         artisan: p.artisan,
         origin: p.origin,

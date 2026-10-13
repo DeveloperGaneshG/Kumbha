@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ProductImage } from "./product-image";
-import { LogoMark } from "./logo";
+import { ProductImage } from "../product-image";
+import { LogoMark } from "../logo";
+import { HeroFrame, HeroText, type HeroCopy } from "./frame";
 
 export type WheelPlate = { href: string; label: string; image: string | null; icon: string };
 
@@ -72,5 +73,14 @@ export function PottersWheel({ plates, seconds = 70 }: { plates: WheelPlate[]; s
         Hover or tap the wheel to stop it
       </p>
     </div>
+  );
+}
+
+/** Clay pots banner: text + the turning wheel on a warm clay background. */
+export function WheelHero({ copy, plates }: { copy: HeroCopy; plates: WheelPlate[] }) {
+  return (
+    <HeroFrame background="linear-gradient(160deg, #f1e4d2 0%, #e3cdb0 55%, #d6b993 100%)" visual={<PottersWheel plates={plates} />}>
+      <HeroText copy={copy} />
+    </HeroFrame>
   );
 }

@@ -49,6 +49,8 @@ export type CategoryRules = {
   guide?: { title: string; intro?: string; steps: { title: string; body: string }[] };
   /** Category-specific questions shown on the category page */
   faqs?: { q: string; a: string }[];
+  /** Interactive banner for this category's page (and its tab on the homepage) */
+  hero?: { style: "wheel" | "diya" | "idol-size" | "lacquer" | "brick-wall"; title: string; subtitle: string };
   /** Craft origin story for GI / heritage categories */
   origin?: { place: string; gi?: boolean; story: string };
 };
